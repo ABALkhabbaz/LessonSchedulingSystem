@@ -5,7 +5,7 @@ The **LessonSchedulingSystem** is a project developed for **SOEN 342 - Section I
 
 ## Team Members
 - **Abdelrahman Alkhabbaz** - 40258582
-- **Mostafa Mohamed** - 40201893
+- **Gabriel Derhy** - 40247254
 
 ## Sprint 1 Goals
 - Set up team and project repository.
