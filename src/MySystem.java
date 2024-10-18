@@ -1,5 +1,5 @@
 
-public class System {
+public class MySystem {
 
     private static void displayWelcomeMenu(){
         System.out.println("Welcome to the system!");
