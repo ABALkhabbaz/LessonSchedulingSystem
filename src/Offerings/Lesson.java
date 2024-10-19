@@ -28,6 +28,10 @@ public class Lesson {
         return instructor;
     }
 
+    public void setInstructor(Instructor instructor) {
+        this.instructor = instructor;
+    }
+
     public Schedule getSchedule() {
         return schedule;
     }

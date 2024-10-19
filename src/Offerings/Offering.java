@@ -14,6 +14,10 @@ public class Offering {
         return lesson.getInstructor();
     }
     
+    public void setInstructor(Instructor instructor) {
+        this.lesson.setInstructor(instructor);
+    }
+    
     public Location getLocation(){
         return this.lesson.getLocation();
     }
@@ -29,4 +33,5 @@ public class Offering {
     public void setLesson(Lesson lesson) {
         this.lesson = lesson;
     }
+
 }
