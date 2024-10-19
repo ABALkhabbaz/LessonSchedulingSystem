@@ -28,20 +28,17 @@ public class MySystem {
 
         int numMenuOptions = 0;
         if (user instanceof Client) {
-            // TODO: Display Client Menu Selection
             System.out.println("1. View available lessons");
-            System.out.println("2. Book a lesson");
-            numMenuOptions = 2; // Update with actual number of options
+            // TODO: Add book a lesson
+            numMenuOptions = 1; // Update with actual number of options
         } else if (user instanceof Instructor) {
-            // TODO: Display Instructor Menu Selection
             System.out.println("1. Select lessons");
-            System.out.println("2. Mark attendance");
-            numMenuOptions = 2; // Update with actual number of options
+            numMenuOptions = 1; // Update with actual number of options
         } else if (user instanceof Admin) {
             // TODO: Display Admin Menu Selection
             System.out.println("1. Add lessons");
-            numMenuOptions = 3; // Update with actual number of options
-        } else if (user instanceof Person) {
+            numMenuOptions = 1; // Update with actual number of options
+        } else if (user instanceof Person || user == null) {
             // TODO: Display Public Menu Selection
             System.out.println("1. View available lessons");
             numMenuOptions = 1;
@@ -50,7 +47,7 @@ public class MySystem {
             System.exit(0);
         }
 
-        System.out.println((numMenuOptions + 1) + ". Exit");
+        System.out.println(++numMenuOptions + ". Exit");
 
         System.out.print("Enter your choice: ");
         int choice = -1;
@@ -79,30 +76,6 @@ public class MySystem {
         return choice;
     }
 
-    // Clients and non clients function to view available Offerings
-    private void displayAvailableOfferings() {
-        // Prints offerings with instuctors assigned
-        System.out.println("====================================");
-        System.out.println("Available Offerings:");
-    
-        // Check if the list is empty
-        if (offerings.isEmpty()) {
-            System.out.println("No offerings available at the moment.");
-        } else {
-            // Iterate through the offerings list and display each one
-            for (int i = 0; i < offerings.size(); i++) {
-                Offering offering = offerings.get(i);
-
-                // skips if instructor is null
-                if(offering.getInstructor() == null) continue;
-
-                System.out.println(i + ". " + offering.toString()); // Assuming Offering class has a toString() method
-            }
-        }
-    
-        System.out.println("====================================");
-    }
-
     public void run() {
 
         // Adds the admin
@@ -120,7 +93,7 @@ public class MySystem {
             
             if(user instanceof Client){
                 if(choice == 1) {
-                    user.displayAvailableOfferings(offerings);
+                    Person.displayAvailableOfferings(offerings);
                 } 
                 if(choice == 2) {
 
@@ -153,7 +126,7 @@ public class MySystem {
 
             } else {
                 if (choice == 1) {
-                    displayAvailableOfferings();
+                    Person.displayAvailableOfferings(offerings);
                 }
 
                 if(choice == 2) {

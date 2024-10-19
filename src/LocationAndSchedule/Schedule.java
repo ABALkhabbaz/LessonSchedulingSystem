@@ -41,8 +41,9 @@ public class Schedule {
     }
 
     // Example of a method to display schedule details
-    public void displaySchedule() {
-        System.out.println("Schedule: Start Date - " + startDate + 
+    @Override
+    public String toString() {
+        return ("Schedule: Start Date - " + startDate + 
                            ", End Date - " + endDate + 
                            ", Start Time - " + startTime + 
                            ", End Time - " + endTime + 
