@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import Actors.*;
 
 public class MySystem {
 
@@ -49,6 +50,10 @@ public class MySystem {
                 System.out.print("Password: ");
                 String password = scan.nextLine();
                 // Must implement logic to check if the username and password are valid
+
+                users.
+
+
                 break;
             case 2:
                 // TODO: Create an account
@@ -61,12 +66,19 @@ public class MySystem {
                 String name = scan.nextLine();
                 System.out.print("Phone: ");
                 String phone = scan.nextLine();
-                // Must implement logic to create an account
+                System.out.print("Age: ");
+                String ageS = scan.nextLine();
+                int age = 0;
+                try {
+                    age = Integer.parseInt(ageS);
+                } catch (Exception e){
 
-                User newUser = new User(username, password, name, phone);
-                users.add()
+                }
 
-                break;
+                User newUser = new User(name, phone, age, username, password);
+                users.add(newUser);
+                
+                return newUser;
             case 3:
                 System.out.println("Skipping login...");
                 return new Person();
