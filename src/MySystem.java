@@ -1,13 +1,17 @@
+import Actors.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import Actors.*;
 
 public class MySystem {
 
     private ArrayList<User> users;
     private ArrayList<Lesson> offerings;
-
     private Scanner scan = new Scanner(System.in); // Scanner is created once and reused.
+
+    public MySystem() {
+        users = new ArrayList<>();
+        offerings = new ArrayList<>();
+    }
 
     private void displayWelcomeMenu() {
         System.out.println("====================================");
@@ -15,81 +19,7 @@ public class MySystem {
         System.out.println("====================================");
     }
 
-    private Person displayUserLoginMenu() {
-        System.out.println("1. Login");
-        System.out.println("2. Create Account");
-        System.out.println("3. Skip Login"); // For public access
-
-        System.out.print("Enter your choice: ");
-        int choice = -1;
-
-        while (true) {
-            String userInput = scan.nextLine();
-
-            try {
-                choice = Integer.parseInt(userInput);
-
-                if (choice < 1 || choice > 3) {
-                    System.err.println("Invalid input. Please enter a number between 1 and 3.");
-                    System.out.print("Enter your choice: ");
-                    continue;
-                }
-                break;
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid input. Please enter a number.");
-                System.out.print("Enter your choice: ");
-            }
-        }
-
-        switch (choice) {
-            case 1:
-                // TODO: Login
-                System.out.println("Logging in...");
-                System.out.print("Username: ");
-                String username = scan.nextLine();
-                System.out.print("Password: ");
-                String password = scan.nextLine();
-                // Must implement logic to check if the username and password are valid
-
-                users.
-
-
-                break;
-            case 2:
-                // TODO: Create an account
-                System.out.println("Creating an account...");
-                System.out.print("Username: ");
-                username = scan.nextLine();
-                System.out.print("Password: ");
-                password = scan.nextLine();
-                System.out.print("Name: ");
-                String name = scan.nextLine();
-                System.out.print("Phone: ");
-                String phone = scan.nextLine();
-                System.out.print("Age: ");
-                String ageS = scan.nextLine();
-                int age = 0;
-                try {
-                    age = Integer.parseInt(ageS);
-                } catch (Exception e){
-
-                }
-
-                User newUser = new User(name, phone, age, username, password);
-                users.add(newUser);
-                
-                return newUser;
-            case 3:
-                System.out.println("Skipping login...");
-                return new Person();
-        }
-
-        System.out.println("====================================");
-        System.out.println("\n\n\n\n\n");
-    }
-
     private int displayMenuOption(Person user) {
-
         System.out.println("====================================");
         System.out.println("Menu Options: ");
 
@@ -119,7 +49,7 @@ public class MySystem {
             System.exit(0);
         }
 
-        System.out.println((numMenuOptions+1) + ". Exit");
+        System.out.println((numMenuOptions + 1) + ". Exit");
 
         System.out.print("Enter your choice: ");
         int choice = -1;
@@ -149,20 +79,19 @@ public class MySystem {
     }
 
     public void run() {
-
         displayWelcomeMenu();
 
-        // Loggin process
-        Person user = displayUserLoginMenu();  // TODO: Adjust this based on login logic
+        // Login process, passing users and scanner to LoginSystem
+        Person user = LoginSystem.promptUserLoginOrCreateAccount(users, scan);
 
         // Ask user to login or create an account
-        
-
-        // Display the menu options based on the user type
-        displayMenuOption(user);
+        if (user != null) {
+            displayMenuOption(user); // Display the menu options based on the user type
+        } else {
+            System.out.println("No user logged in.");
+        }
 
         // Keep Scanner open until the program is finished.
-
         this.close(); // Ensures System closes properly
     }
 
