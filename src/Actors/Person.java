@@ -1,3 +1,5 @@
+package Actors;
+
 public class Person {
 
     private String name;
@@ -19,6 +21,7 @@ public class Person {
     public void display(){
         System.out.println("Name: " + name);
         System.out.println("Age: " + age);
+        System.out.println("Phone: " + phone);
     }
 
     public void setName(String name){

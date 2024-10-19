@@ -1,4 +1,6 @@
-public class Admin extends Person {
+package Actors;
+
+public class Admin extends User {
 
     public Admin(String name, String phone) {
         super(name, phone);

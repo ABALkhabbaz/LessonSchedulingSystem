@@ -1,4 +1,6 @@
-public class Client extends Person {
+package Actors;
+
+public class Client extends User {
 
     public Client(String name, String phone) {
         super(name, phone);
