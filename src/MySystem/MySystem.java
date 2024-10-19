@@ -23,6 +23,11 @@ public class MySystem {
     }
 
     private int displayMenuOption(Person user) {
+
+        /*
+         * MAKE SURE TO CHANGE THE MENU OPTIONS BASED ON THE USER TYPE
+         * MAKE SURE TO UPDATE THE QUIT OPTION BASED ON THE NUMBER OF MENU OPTIONS
+         */
         System.out.println("====================================");
         System.out.println("Menu Options: ");
 
@@ -80,8 +85,17 @@ public class MySystem {
 
         // Adds the admin
         Admin admin = new Admin("admin", "", 0, "admin", "admin");
-        users.add(admin);
 
+        // Adds the instructor
+        Instructor instructor = new Instructor("instructor", "", 0, "instructor", "instructor");
+        instructor.setSpecialization("Specialization");
+        instructor.setAvailableCities(new ArrayList<String>() {{
+            add("City1");
+            add("City2");
+        }});
+
+        users.add(admin);
+        users.add(instructor);
 
         displayWelcomeMenu();
 
@@ -95,10 +109,8 @@ public class MySystem {
                 if(choice == 1) {
                     Person.displayAvailableOfferings(offerings);
                 } 
-                if(choice == 2) {
-
-                }
-                if(choice == 3){
+                
+                if(choice == 2){
                     // Quitting
                     break;
                 }
@@ -108,7 +120,7 @@ public class MySystem {
                     ((Instructor) user).selectLesson(offerings, scan);
                 }
                 
-                if (choice == 3) {
+                if (choice == 2) {
                     // Quitting
                     break;
                 }

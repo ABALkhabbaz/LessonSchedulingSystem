@@ -9,10 +9,8 @@ public class Instructor extends User {
     private ArrayList<String> availableCities;
     private String specialization;
 
-    public Instructor(String name, String phone, int age, String username, String password, ArrayList<String> availableCities, String specialization) {
+    public Instructor(String name, String phone, int age, String username, String password) {
         super(name, phone, age, username, password);
-        this.availableCities = availableCities;
-        this.specialization = specialization;
     }
 
     // Getter methods
@@ -76,5 +74,14 @@ public class Instructor extends User {
                 System.err.println("Invalid input. Please enter a number.");
             }
         }
+    }
+
+    // Setter methods
+    public void setAvailableCities(ArrayList<String> availableCities) {
+        this.availableCities = availableCities;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
     }
 }
