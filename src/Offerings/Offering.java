@@ -1,6 +1,7 @@
 package Offerings;
 
 import Actors.Instructor;
+import LocationAndSchedule.Location;
 
 public class Offering {
     private Lesson lesson;
@@ -13,6 +14,9 @@ public class Offering {
         return lesson.getInstructor();
     }
     
+    public Location getLocation(){
+        return this.lesson.getLocation();
+    }
     @Override
     public String toString(){
         return this.lesson.toString();

@@ -34,14 +34,12 @@ public class MySystem {
             numMenuOptions = 2; // Update with actual number of options
         } else if (user instanceof Instructor) {
             // TODO: Display Instructor Menu Selection
-            System.out.println("1. View assigned lessons");
+            System.out.println("1. Select lessons");
             System.out.println("2. Mark attendance");
             numMenuOptions = 2; // Update with actual number of options
         } else if (user instanceof Admin) {
             // TODO: Display Admin Menu Selection
-            System.out.println("1. Manage lessons");
-            System.out.println("2. View all bookings");
-            System.out.println("3. Manage users");
+            System.out.println("1. Add lessons");
             numMenuOptions = 3; // Update with actual number of options
         } else if (user instanceof Person) {
             // TODO: Display Public Menu Selection
@@ -81,6 +79,7 @@ public class MySystem {
         return choice;
     }
 
+    // Clients and non clients function to view available Offerings
     private void displayAvailableOfferings() {
         // Prints offerings with instuctors assigned
         System.out.println("====================================");
@@ -103,10 +102,14 @@ public class MySystem {
     
         System.out.println("====================================");
     }
-    
-
 
     public void run() {
+
+        // Adds the admin
+        Admin admin = new Admin("admin", "", 0, "admin", "admin");
+        users.add(admin);
+
+
         displayWelcomeMenu();
 
         // Login process, passing users and scanner to LoginSystem
@@ -117,7 +120,7 @@ public class MySystem {
             
             if(user instanceof Client){
                 if(choice == 1) {
-                    displayAvailableOfferings();
+                    user.displayAvailableOfferings(offerings);
                 } 
                 if(choice == 2) {
 
@@ -127,21 +130,39 @@ public class MySystem {
                     break;
                 }
             } else if (user instanceof Instructor) {
-
+                if (choice == 1) {
+                    // Select lessons
+                    ((Instructor) user).selectLesson(offerings, scan);
+                }
+                
+                if (choice == 3) {
+                    // Quitting
+                    break;
+                }
 
             } else if (user instanceof Admin){
+                if (choice == 1) {
+                    // Adds Lesson
+                    ((Admin) user).addOffering(offerings, scan);
+                }
 
+                if(choice == 2) {
+                    // Quitting 
+                    break;
+                }
 
             } else {
                 if (choice == 1) {
                     displayAvailableOfferings();
                 }
+
+                if(choice == 2) {
+                    // Quitting
+                    break;
+                }
             }
             
         }
-        
-
-
 
         // Keep Scanner open until the program is finished.
         this.close(); // Ensures System closes properly

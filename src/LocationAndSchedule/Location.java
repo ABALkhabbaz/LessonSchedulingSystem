@@ -1,6 +1,6 @@
 package LocationAndSchedule;
 
-class Location {
+public class Location {
     private String name;
     private String city;
     private String province;
