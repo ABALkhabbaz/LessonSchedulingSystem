@@ -2,22 +2,16 @@ public class Space {
     private String name;
     private Location location;
 
-    
-    // Getters
-    public String getName(){
+    public Space(String name, Location location) {
+        this.name = name;
+        this.location = location;
+    }
+
+    public String getName() {
         return name;
     }
 
-    public Location getLocation(){
+    public Location getLocation() {
         return location;
-    }
-
-    // Setters
-    public void setName(String name){
-        this.name = name;
-    }
-
-    public void setLocation(Location location){
-        this.location = location;
     }
 }

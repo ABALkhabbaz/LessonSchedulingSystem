@@ -1,64 +1,49 @@
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
+import java.sql.Time;
 
 public class Schedule {
-
+    private Date startDate;
+    private Date endDate;
+    private Time startTime;
+    private Time endTime;
     private String day;
 
-    private LocalTime startTime;
-    private LocalTime endTime;
-
-    private LocalDate startDate;
-    private LocalDate endDate;
-
-    // Constructors
-    public Schedule(){}
-
-    public void display(){
-        System.out.println("Day: " + day);
-        System.out.println("Start Time: " + startTime);
-        System.out.println("End Time: " + endTime);
-    }
-
-    // Getters
-    public String getDay(){
-        return day;
-    }
-    public LocalTime getStartTime(){
-        return startTime;
-    }
-
-    public LocalTime getEndTime(){
-        return endTime;
-    }
-
-    public LocalDate getStartDate(){
-        return startDate;
-    }
-
-    public LocalDate getEndDate(){
-        return endDate;
-    }
-
-
-    // Setters
-    public void setDay(String day){
+    // Constructor
+    public Schedule(Date startDate, Date endDate, Time startTime, Time endTime, String day) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.day = day;
     }
 
-    public void setStartTime(LocalTime startTime){
-        this.startTime = startTime;
+    // Getter methods
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setEndTime(LocalTime endTime){
-        this.endTime = endTime;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setStartDate(LocalDate startDate){
-        this.startDate = startDate;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setEndDate(LocalDate endDate){
-        this.endDate = endDate;
-    }   
+    public Time getEndTime() {
+        return endTime;
+    }
+
+    public String getDay() {
+        return day;
+    }
+
+    // Example of a method to display schedule details
+    public void displaySchedule() {
+        System.out.println("Schedule: Start Date - " + startDate + 
+                           ", End Date - " + endDate + 
+                           ", Start Time - " + startTime + 
+                           ", End Time - " + endTime + 
+                           ", Day - " + day);
+    }
 }
