@@ -1,4 +1,5 @@
 package Booking;
+
 public class Booking {
     private Client client;
     private Lesson lesson;

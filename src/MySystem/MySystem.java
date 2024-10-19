@@ -1,11 +1,14 @@
+package MySystem;
+
 import Actors.*;
+import Offerings.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MySystem {
 
     private ArrayList<User> users;
-    private ArrayList<Lesson> offerings;
+    private ArrayList<Offering> offerings;
     private Scanner scan = new Scanner(System.in); // Scanner is created once and reused.
 
     public MySystem() {
@@ -78,24 +81,74 @@ public class MySystem {
         return choice;
     }
 
+    private void displayAvailableOfferings() {
+        // Prints offerings with instuctors assigned
+        System.out.println("====================================");
+        System.out.println("Available Offerings:");
+    
+        // Check if the list is empty
+        if (offerings.isEmpty()) {
+            System.out.println("No offerings available at the moment.");
+        } else {
+            // Iterate through the offerings list and display each one
+            for (int i = 0; i < offerings.size(); i++) {
+                Offering offering = offerings.get(i);
+
+                // skips if instructor is null
+                if(offering.getInstructor() == null) continue;
+
+                System.out.println(i + ". " + offering.toString()); // Assuming Offering class has a toString() method
+            }
+        }
+    
+        System.out.println("====================================");
+    }
+    
+
+
     public void run() {
         displayWelcomeMenu();
 
         // Login process, passing users and scanner to LoginSystem
         Person user = LoginSystem.promptUserLoginOrCreateAccount(users, scan);
 
-        // Ask user to login or create an account
-        if (user != null) {
-            displayMenuOption(user); // Display the menu options based on the user type
-        } else {
-            System.out.println("No user logged in.");
+        while(true) {
+            int choice = displayMenuOption(user); // Display the menu options based on the user type
+            
+            if(user instanceof Client){
+                if(choice == 1) {
+                    displayAvailableOfferings();
+                } 
+                if(choice == 2) {
+
+                }
+                if(choice == 3){
+                    // Quitting
+                    break;
+                }
+            } else if (user instanceof Instructor) {
+
+
+            } else if (user instanceof Admin){
+
+
+            } else {
+                if (choice == 1) {
+                    displayAvailableOfferings();
+                }
+            }
+            
         }
+        
+
+
 
         // Keep Scanner open until the program is finished.
         this.close(); // Ensures System closes properly
     }
 
     public void close() {
+        System.out.println("Closing Application");
         scan.close();
     }
 }
