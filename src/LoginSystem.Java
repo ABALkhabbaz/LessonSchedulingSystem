@@ -83,37 +83,60 @@ public class LoginSystem {
     }
 
     private static Person createNewUser(ArrayList<User> users, Scanner scan) {
-        System.out.println("Creating an account...");
-        
-        System.out.print("Username: ");
-        String username = scan.nextLine();
+        while (true) {  // Loop for retries
+            System.out.println("Creating an account...");
     
-        // Check if username already exists
-        for (User user : users) {
-            if (user.getUsername().equals(username)) {
-                System.err.println("This username already exists. Try again.");
-                return null;  // Returning null if user already exists
+            // Username input and validation loop
+            String username;
+            while (true) {
+                System.out.print("Username: ");
+                username = scan.nextLine();
+    
+                // Check if username already exists
+                boolean usernameExists = false;
+                for (User user : users) {
+                    if (user.getUsername().equals(username)) {
+                        System.err.println("This username already exists. Try again.");
+                        usernameExists = true;
+                        break;
+                    }
+                }
+    
+                if (!usernameExists) {
+                    break;  // Username is valid, break out of loop
+                }
             }
+    
+            // Prompt for the remaining user details
+            System.out.print("Password: ");
+            String password = scan.nextLine();
+            System.out.print("Name: ");
+            String name = scan.nextLine();
+            System.out.print("Phone: ");
+            String phone = scan.nextLine();
+    
+            // Age input and validation loop
+            int age = 0;
+            while (true) {
+                System.out.print("Age: ");
+                try {
+                    age = Integer.parseInt(scan.nextLine());
+                    if (age < 0) {
+                        System.err.println("Age cannot be negative. Try again.");
+                    } else {
+                        break;  // Valid age, exit loop
+                    }
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid input for age. Please enter a valid number.");
+                }
+            }
+    
+            // Create new user and add to system
+            User newUser = new User(name, phone, age, username, password);
+            users.add(newUser);  // Add the new user to the system
+    
+            System.out.println("Account created successfully!");
+            return newUser;  // Return the newly created user
         }
-    
-        System.out.print("Password: ");
-        String password = scan.nextLine();
-        System.out.print("Name: ");
-        String name = scan.nextLine();
-        System.out.print("Phone: ");
-        String phone = scan.nextLine();
-        System.out.print("Age: ");
-        int age = 0;
-        try {
-            age = Integer.parseInt(scan.nextLine());
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid input for age. Age set to 0.");
-        }
-    
-        User newUser = new User(name, phone, age, username, password);
-        users.add(newUser);  // Add the new user to the system
-    
-        System.out.println("Account created successfully!");
-        return newUser;  // Return the newly created user
-    }
+    }    
 }
