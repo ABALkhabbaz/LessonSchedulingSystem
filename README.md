@@ -17,4 +17,5 @@ The **LessonSchedulingSystem** is a project developed for **SOEN 342 - Section I
 - Created system sequence diagrams for success and failure scenarios, incorporating lesson conflict checks and instructor availability.
 - Identified system operations and defined operation contracts based on role-specific functionalities.
 - Designed UML interaction diagrams to capture object collaborations between users, offerings, and system managers.
+- Developed a class diagram reflecting the relationships between users, lessons, bookings, and schedules.
 - Implemented core classes in Java, including the integration of system methods for adding lessons, booking lessons, and selecting offerings using user input via `Scanner`.
