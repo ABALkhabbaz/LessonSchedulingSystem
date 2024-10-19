@@ -27,7 +27,8 @@ public class MySystem {
         /*
          * MAKE SURE TO CHANGE THE MENU OPTIONS BASED ON THE USER TYPE
          * MAKE SURE TO UPDATE THE QUIT OPTION BASED ON THE NUMBER OF MENU OPTIONS
-         */
+        */
+
         System.out.println("====================================");
         System.out.println("Menu Options: ");
 
