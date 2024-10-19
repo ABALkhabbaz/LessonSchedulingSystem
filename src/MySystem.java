@@ -63,6 +63,7 @@ public class MySystem {
                 String phone = scan.nextLine();
                 // Must implement logic to create an account
 
+                User newUser = new User(username, password, name, phone);
                 users.add()
 
                 break;
