@@ -1,3 +1,4 @@
+package LocationAndSchedule;
 public class Space {
     private String name;
     private Location location;

@@ -1,3 +1,4 @@
+package LocationAndSchedule;
 import java.util.Date;
 import java.sql.Time;
 
