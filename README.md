@@ -12,3 +12,9 @@ The **LessonSchedulingSystem** is a project developed for **SOEN 342 - Section I
 - Develop a use case diagram outlining the core system functionalities.
 - Prepare the foundational structure for the system's development.
 
+## Sprint 2 Goals
+- Developed a UML domain model and package diagram.
+- Created system sequence diagrams for success and failure scenarios.
+- Identified system operations and defined operation contracts.
+- Designed UML interaction diagrams to show object collaborations.
+- Implemented core classes to structure the system in Java.
