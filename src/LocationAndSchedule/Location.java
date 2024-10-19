@@ -1,3 +1,4 @@
+package LocationAndSchedule;
 class Location {
     private String city;
     private String province;
