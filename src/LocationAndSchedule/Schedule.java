@@ -1,6 +1,7 @@
 package LocationAndSchedule;
-import java.util.Date;
+
 import java.sql.Time;
+import java.util.Date;
 
 public class Schedule {
     private Date startDate;
