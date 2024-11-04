@@ -1,5 +1,7 @@
 package Offerings;
 
+import LocationAndSchedule.Location;
+import LocationAndSchedule.Schedule;
 import Actors.Instructor;
 import LocationAndSchedule.*;
 
@@ -10,7 +12,6 @@ public class Lesson {
     private Location location;
     private boolean isPrivate;
 
-    // Constructor
     public Lesson(String discipline, Instructor instructor, Schedule schedule, Location location, boolean isPrivate) {
         this.discipline = discipline;
         this.instructor = instructor;
@@ -19,9 +20,12 @@ public class Lesson {
         this.isPrivate = isPrivate;
     }
 
-    // Getter methods
     public String getDiscipline() {
         return discipline;
+    }
+
+    public void setDiscipline(String discipline) {
+        this.discipline = discipline;
     }
 
     public Instructor getInstructor() {
@@ -36,31 +40,40 @@ public class Lesson {
         return schedule;
     }
 
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
+
     public Location getLocation() {
         return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     public boolean isPrivate() {
         return isPrivate;
     }
 
-    // Method to display specific lesson details
+    public void setPrivate(boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    /**
+     * Displays detailed information about the lesson.
+     */
     public void specificLessonDetails() {
         System.out.println("Lesson Details:");
         System.out.println("Discipline: " + discipline);
-        System.out.println("Instructor: " + (instructor != null ? instructor.getName() : "N/A"));
-        System.out.println("Schedule: " + (schedule != null ? schedule.toString() : "N/A"));
-        System.out.println("Location: " + (location != null ? location.getName() : "N/A"));
-        System.out.println("Is Private: " + (isPrivate ? "Yes" : "No"));
+        System.out.println("Instructor: " + (instructor != null ? instructor.getName() : "No Instructor Assigned"));
+        System.out.println("Schedule: " + (schedule != null ? schedule.toString() : "No Schedule Assigned"));
+        System.out.println("Location: " + (location != null ? location.toString() : "No Location Assigned"));
+        System.out.println("Private Lesson: " + (isPrivate ? "Yes" : "No"));
     }
 
-    // toString method for easy display
     @Override
     public String toString() {
-        return "Lesson [Discipline: " + discipline + 
-               ", Instructor: " + (instructor != null ? instructor.getName() : "N/A") +
-               ", Schedule: " + (schedule != null ? schedule.toString() : "N/A") +
-               ", Location: " + (location != null ? location.getName() : "N/A") +
-               ", Is Private: " + (isPrivate ? "Yes" : "No") + "]";
+        return "Lesson [Discipline=" + discipline + ", Instructor=" + (instructor != null ? instructor.getName() : "N/A") + "]";
     }
 }

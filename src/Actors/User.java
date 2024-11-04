@@ -1,49 +1,51 @@
 package Actors;
 
+import java.util.ArrayList;
+import Offerings.Offering;
+
 public class User extends Person {
     private String username;
     private String password;
 
-    public User(String name, String phone, int age, String username, String password) {
-        super(username, phone, age);
+    public User(String name, String phone, String username, String password) {
+        super(name, phone);
         this.username = username;
         this.password = password;
     }
 
-    // Getters
     public String getUsername() {
         return username;
     }
 
-    public String getPassword(){
-        return password;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    // Setters
-    public void setUsername(String username){
-        this.username = username;
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        // Check if the object is the same as the current instance
-        if (this == obj) {
-            return true;
+    /**
+     * Displays the available offerings to the user.
+     * @param offerings List of available offerings in the system.
+     */
+    public void viewsOffering(ArrayList<Offering> offerings) {
+        System.out.println(username + " is viewing available offerings:");
+        if (offerings.isEmpty()) {
+            System.out.println("No offerings available at the moment.");
+        } else {
+            for (Offering offering : offerings) {
+                System.out.println(offering.toString()); // Adjusting to display Offering's details
+            }
         }
-
-        // Check if the object is an instance of the User class
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        // Cast the object to User and compare the fields
-        User user = (User) obj;
-        return this.username.equals(user.getUsername()) && this.password.equals(user.getPassword());
     }
 
-
+    @Override
+    public void displayRole() {
+        System.out.println("Role: User");
+    }
 }

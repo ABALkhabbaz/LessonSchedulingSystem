@@ -17,10 +17,10 @@ public class Admin extends User {
         super(name, phone, age, username, password);
     }
 
-    // Method to add a new offering
-    public void addOffering(ArrayList<Offering> offerings, Scanner scan) {
+    // Method to add a new lesson (renamed from addOffering)
+    public void addLesson(ArrayList<Offering> offerings, Scanner scan) {
         System.out.println("====================================");
-        System.out.println("Adding a New Offering");
+        System.out.println("Adding a New Lesson");
 
         // Collect lesson details from the admin
         System.out.print("Enter discipline: ");
@@ -106,7 +106,7 @@ public class Admin extends User {
         // Add the new offering to the list
         offerings.add(newOffering);
 
-        System.out.println("New offering added successfully!");
+        System.out.println("New lesson added successfully!");
         System.out.println(newOffering);
         System.out.println("====================================");
     }

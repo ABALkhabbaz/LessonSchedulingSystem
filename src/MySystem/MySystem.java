@@ -1,161 +1,139 @@
 package MySystem;
 
-import Actors.*;
-import Offerings.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import Actors.Admin;
+import Actors.Client;
+import Actors.Instructor;
+import Actors.Person;
+import Actors.User;
+import Offerings.Offering;
 
 public class MySystem {
+    private ArrayList<Offering> offerings = new ArrayList<>();
+    private LoginSystem loginSystem = new LoginSystem();
+    private ArrayList<User> users = new ArrayList<>(); // Keeps track of registered users
 
-    private ArrayList<User> users;
-    private ArrayList<Offering> offerings;
-    private Scanner scan = new Scanner(System.in); // Scanner is created once and reused.
-
-    public MySystem() {
-        users = new ArrayList<>();
-        offerings = new ArrayList<>();
+    // Display the welcome menu for the system
+    public void displayWelcomeMenu() {
+        System.out.println("Welcome to the Lesson Scheduling System");
+        System.out.println("1. Login");
+        System.out.println("2. Register");
+        System.out.println("3. Exit");
     }
 
-    private void displayWelcomeMenu() {
-        System.out.println("====================================");
-        System.out.println("Welcome to the Lesson Scheduling System!");
-        System.out.println("====================================");
-    }
-
-    private int displayMenuOption(Person user) {
-
-        /*
-         * MAKE SURE TO CHANGE THE MENU OPTIONS BASED ON THE USER TYPE
-         * MAKE SURE TO UPDATE THE QUIT OPTION BASED ON THE NUMBER OF MENU OPTIONS
-        */
-
-        System.out.println("====================================");
-        System.out.println("Menu Options: ");
-
-        int numMenuOptions = 0;
-        if (user instanceof Client) {
-            System.out.println("1. View available lessons");
-            // TODO: Add book a lesson
-            numMenuOptions = 1; // Update with actual number of options
+    // Display options based on the user type
+    public int displayMenuOption(Person user) {
+        if (user instanceof Admin) {
+            System.out.println("Admin Options:");
+            System.out.println("1. Create Offering");
+            System.out.println("2. View Offerings");
+            System.out.println("3. Logout");
         } else if (user instanceof Instructor) {
-            System.out.println("1. Select lessons");
-            numMenuOptions = 1; // Update with actual number of options
-        } else if (user instanceof Admin) {
-            // TODO: Display Admin Menu Selection
-            System.out.println("1. Add lessons");
-            numMenuOptions = 1; // Update with actual number of options
-        } else if (user instanceof Person || user == null) {
-            // TODO: Display Public Menu Selection
-            System.out.println("1. View available lessons");
-            numMenuOptions = 1;
+            System.out.println("Instructor Options:");
+            System.out.println("1. Select Offering");
+            System.out.println("2. View Offerings");
+            System.out.println("3. Logout");
+        } else if (user instanceof Client) {
+            System.out.println("Client Options:");
+            System.out.println("1. Browse Offerings");
+            System.out.println("2. Enroll in Class");
+            System.out.println("3. Logout");
+        }
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextInt();
+    }
+
+    // Process offerings - handles offering creation and management by Admin
+    public void processOfferings(Admin admin, Scanner scan) {
+        Offering offering = admin.addLesson(offerings, scan);
+        if (offering != null) {
+            offerings.add(offering);
+            System.out.println("Offering added successfully.");
         } else {
-            System.err.println("Invalid User Type. Exiting Program.");
-            System.exit(0);
+            System.out.println("Failed to add offering.");
         }
-
-        System.out.println(++numMenuOptions + ". Exit");
-
-        System.out.print("Enter your choice: ");
-        int choice = -1;
-
-        while (true) {
-            String userInput = scan.nextLine();
-
-            try {
-                choice = Integer.parseInt(userInput);
-
-                if (choice < 1 || choice > numMenuOptions) {
-                    System.err.println("Invalid input. Please enter a number between 1 and " + numMenuOptions + ".");
-                    System.out.print("Enter your choice: ");
-                    continue;
-                }
-                break;
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid input. Please enter a number.");
-                System.out.print("Enter your choice: ");
-            }
-        }
-
-        System.out.println("====================================");
-        System.out.println("\n\n\n\n\n");
-
-        return choice;
     }
 
+    // Manage scheduling - For Instructor to select and manage their lessons
+    public void manageScheduling(Instructor instructor, Scanner scan) {
+        Offering selectedOffering = instructor.selectLesson(offerings, scan);
+        if (selectedOffering != null) {
+            System.out.println("Lesson selected: " + selectedOffering.getLesson().getDiscipline());
+        } else {
+            System.out.println("No available offerings selected.");
+        }
+    }
+
+    // Display available offerings to the public or any user type
+    public void displayAvailableOfferings() {
+        if (offerings.isEmpty()) {
+            System.out.println("No offerings available at the moment.");
+        } else {
+            System.out.println("Available Offerings:");
+            for (Offering offering : offerings) {
+                System.out.println("- " + offering.getLesson().getDiscipline() + " by " + offering.getLesson().getInstructor().getName());
+            }
+        }
+    }
+
+    // Run the system - Main loop
     public void run() {
+        Scanner scanner = new Scanner(System.in);
+        boolean isRunning = true;
 
-        // Adds the admin
-        Admin admin = new Admin("admin", "", 0, "admin", "admin");
+        while (isRunning) {
+            displayWelcomeMenu();
+            int choice = scanner.nextInt();
 
-        // Adds the instructor
-        Instructor instructor = new Instructor("instructor", "", 0, "instructor", "instructor");
-        instructor.setSpecialization("Specialization");
-        instructor.setAvailableCities(new ArrayList<String>() {{
-            add("City1");
-            add("City2");
-        }});
+            switch (choice) {
+                case 1: // Login
+                    Person user = loginSystem.loginUser(users, scanner);
+                    if (user != null) {
+                        System.out.println("Login successful. Welcome, " + user.getName() + "!");
+                        boolean userSession = true;
 
-        users.add(admin);
-        users.add(instructor);
+                        while (userSession) {
+                            int option = displayMenuOption(user);
 
-        displayWelcomeMenu();
-
-        // Login process, passing users and scanner to LoginSystem
-        Person user = LoginSystem.promptUserLoginOrCreateAccount(users, scan);
-
-        while(true) {
-            int choice = displayMenuOption(user); // Display the menu options based on the user type
-            
-            if(user instanceof Client){
-                if(choice == 1) {
-                    Person.displayAvailableOfferings(offerings);
-                } 
-                
-                if(choice == 2){
-                    // Quitting
+                            if (user instanceof Admin && option == 1) {
+                                processOfferings((Admin) user, scanner);
+                            } else if (user instanceof Instructor && option == 1) {
+                                manageScheduling((Instructor) user, scanner);
+                            } else if (option == 2) {
+                                displayAvailableOfferings();
+                            } else if (option == 3) {
+                                System.out.println("Logging out...");
+                                userSession = false;
+                            } else {
+                                System.out.println("Invalid option. Please try again.");
+                            }
+                        }
+                    } else {
+                        System.out.println("Login failed. Please try again.");
+                    }
                     break;
-                }
-            } else if (user instanceof Instructor) {
-                if (choice == 1) {
-                    // Select lessons
-                    ((Instructor) user).selectLesson(offerings, scan);
-                }
-                
-                if (choice == 2) {
-                    // Quitting
+
+                case 2: // Register
+                    loginSystem.createNewUser(users, scanner);
+                    System.out.println("Registration successful.");
                     break;
-                }
 
-            } else if (user instanceof Admin){
-                if (choice == 1) {
-                    // Adds Lesson
-                    ((Admin) user).addOffering(offerings, scan);
-                }
-
-                if(choice == 2) {
-                    // Quitting 
+                case 3: // Exit
+                    System.out.println("Exiting the system...");
+                    isRunning = false;
                     break;
-                }
 
-            } else {
-                if (choice == 1) {
-                    Person.displayAvailableOfferings(offerings);
-                }
-
-                if(choice == 2) {
-                    // Quitting
+                default:
+                    System.out.println("Invalid choice. Please select a valid option.");
                     break;
-                }
             }
-            
         }
-
-        // Keep Scanner open until the program is finished.
-        this.close(); // Ensures System closes properly
+        close();
     }
 
+    // Close the system - Cleanup or closing actions
     public void close() {
-        System.out.println("Closing Application");
-        scan.close();
+        System.out.println("Thank you for using the Lesson Scheduling System. Goodbye!");
     }
 }

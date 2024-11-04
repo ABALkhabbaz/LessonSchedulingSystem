@@ -2,6 +2,7 @@ package Offerings;
 
 import Actors.Instructor;
 import LocationAndSchedule.Location;
+import LessonSchedulingSystem.Lesson;
 
 public class Offering {
     private Lesson lesson;
@@ -10,22 +11,6 @@ public class Offering {
         this.lesson = lesson;
     }
 
-    public Instructor getInstructor() {
-        return lesson.getInstructor();
-    }
-    
-    public void setInstructor(Instructor instructor) {
-        this.lesson.setInstructor(instructor);
-    }
-    
-    public Location getLocation(){
-        return this.lesson.getLocation();
-    }
-    @Override
-    public String toString(){
-        return this.lesson.toString();
-    }
-    
     public Lesson getLesson() {
         return lesson;
     }
@@ -34,4 +19,24 @@ public class Offering {
         this.lesson = lesson;
     }
 
+    /**
+     * Displays details of the offering.
+     */
+    public void displayOfferingDetails() {
+        if (lesson != null) {
+            System.out.println("Offering Details:");
+            System.out.println("Discipline: " + lesson.getDiscipline());
+            System.out.println("Instructor: " + lesson.getInstructor().getName());
+            System.out.println("Schedule: " + lesson.getSchedule().toString());
+            System.out.println("Location: " + lesson.getLocation().toString());
+            System.out.println("Private Lesson: " + (lesson.isPrivate() ? "Yes" : "No"));
+        } else {
+            System.out.println("No lesson associated with this offering.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Offering: " + (lesson != null ? lesson.getDiscipline() : "No Lesson Assigned");
+    }
 }
