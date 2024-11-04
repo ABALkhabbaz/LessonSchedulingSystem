@@ -21,6 +21,8 @@ The **LessonSchedulingSystem** is a project for **SOEN 342 - Section II** that m
 - Implemented core classes in Java, integrating methods for lesson creation, booking, and offering selection with user input.
 
 ## Sprint 3 Goals
-- Refined existing artifacts based on new requirements.
-- Enhanced system functionality for lesson booking by clients, including validations for conflicts and availability.
-- Updated diagrams (domain, sequence, interaction, and class) to reflect changes.
+- Refined existing artifacts based on updated requirements for lesson booking and scheduling.
+- Enhanced system functionality for client bookings, adding validations for schedule conflicts and availability.
+- Updated diagrams (domain model, package, sequence, interaction, and class) to reflect refined system requirements and functionality.
+- Modified Java classes to align with the updated class structure, ensuring consistency across the system.
+
