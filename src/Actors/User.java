@@ -11,7 +11,7 @@ public class User extends Person {
     private String name;
     private String phone;
     private LocalDate birthDate;
-    private String username; // Will act as the pk in db
+    private String username; 
     private String password;
 
     public User(long userId, String name, String phone, LocalDate birthDate, String username, String password) {
