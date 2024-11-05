@@ -1,5 +1,6 @@
 package Actors;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,8 +10,8 @@ public class Instructor extends User {
     private List<String> availableCities;
     private String specialization;
 
-    public Instructor(String name, String phone, String username, String password, List<String> availableCities, String specialization) {
-        super(name, phone, username, password);
+    public Instructor(long userId, String name, String phone, LocalDate birthDate, String username, String password, String specialization, ArrayList<String> availableCities) {
+        super(userId, name, phone, birthDate, username, password);
         this.availableCities = availableCities;
         this.specialization = specialization;
     }
