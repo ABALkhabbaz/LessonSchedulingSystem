@@ -43,6 +43,14 @@ public class User extends Person {
         this.phone = phone;
     }
 
+    public LocalDate getBirthDate () {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
     public String getUsername() {
         return username;
     }
