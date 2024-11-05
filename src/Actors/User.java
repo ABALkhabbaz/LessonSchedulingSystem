@@ -81,7 +81,7 @@ public class User extends Person {
             }
         }
     }
-
+    
     public void displayRole() {
         System.out.println("Role: User");
     }

@@ -88,7 +88,7 @@ public class MySystem {
 
             switch (choice) {
                 case 1: // Login
-                    Person user = loginSystem.loginUser(users, scanner);
+                    User user = loginSystem.loginUser(users, scanner);
                     if (user != null) {
                         System.out.println("Login successful. Welcome, " + user.getName() + "!");
                         boolean userSession = true;

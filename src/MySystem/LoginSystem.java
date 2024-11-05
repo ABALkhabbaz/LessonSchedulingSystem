@@ -52,7 +52,7 @@ public class LoginSystem {
         }
     }
 
-    private static Person loginUser(ArrayList<User> users, Scanner scan) {
+    public static User loginUser(ArrayList<User> users, Scanner scan) {
         while (true) { // Infinite loop for retries
             System.out.println("Logging in...");
             System.out.print("Username: ");
@@ -82,13 +82,13 @@ public class LoginSystem {
                 if (!retry.equals("y")) {
                     // If the user doesn't want to retry, return new Person
                     System.out.println("Exiting login...");
-                    return new Person(); // Login failed, returning non-logged in client
+                    return null; // Login failed, returning non-logged in client
                 }
             }
         }
     }
 
-    private static Person createNewUser(ArrayList<User> users, Scanner scan) {
+    public static Person createNewUser(ArrayList<User> users, Scanner scan) {
         while (true) { // Loop for retries
             System.out.println("Creating an account...");
 
