@@ -2,7 +2,6 @@ package Offerings;
 
 import Actors.Instructor;
 import LocationAndSchedule.Location;
-import LessonSchedulingSystem.Lesson;
 
 public class Offering {
     private Lesson lesson;

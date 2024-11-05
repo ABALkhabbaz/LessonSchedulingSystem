@@ -1,6 +1,10 @@
 package MySystem;
 
 import Actors.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -11,17 +15,17 @@ public class LoginSystem {
         System.out.println("1. Login");
         System.out.println("2. Create Account");
         System.out.println("3. Skip Login"); // For public access
-    
+
         int choice = -1;
-    
+
         // Input validation for user choice
         while (true) {
             System.out.print("Enter your choice: ");
             String userInput = scan.nextLine();
-    
+
             try {
                 choice = Integer.parseInt(userInput);
-    
+
                 if (choice < 1 || choice > 3) {
                     System.err.println("Invalid input. Please enter a number between 1 and 3.");
                 } else {
@@ -31,7 +35,7 @@ public class LoginSystem {
                 System.err.println("Invalid input. Please enter a number.");
             }
         }
-    
+
         switch (choice) {
             case 1:
                 // Login process
@@ -42,20 +46,20 @@ public class LoginSystem {
             case 3:
                 // Skip login, return a generic user
                 System.out.println("Skipping login...");
-                return null;  // Returning null to indicate no login
+                return null; // Returning null to indicate no login
             default:
                 return null;
         }
     }
-    
+
     private static Person loginUser(ArrayList<User> users, Scanner scan) {
-        while (true) {  // Infinite loop for retries
+        while (true) { // Infinite loop for retries
             System.out.println("Logging in...");
             System.out.print("Username: ");
             String username = scan.nextLine();
             System.out.print("Password: ");
             String password = scan.nextLine();
-    
+
             // Find the user by username
             User foundUser = null;
             for (User user : users) {
@@ -64,36 +68,36 @@ public class LoginSystem {
                     break;
                 }
             }
-    
+
             // Check if the user is found and if the password matches
             if (foundUser != null && foundUser.getPassword().equals(password)) {
                 System.out.println("Login successful. Welcome " + foundUser.getUsername() + "!");
-                return foundUser;  // Successfully authenticated
+                return foundUser; // Successfully authenticated
             } else {
                 System.err.println("Invalid username or password.");
-    
+
                 // Ask if the user wants to try again or exit
                 System.out.print("Would you like to try again? (y/n): ");
                 String retry = scan.nextLine().trim().toLowerCase();
                 if (!retry.equals("y")) {
                     // If the user doesn't want to retry, return new Person
                     System.out.println("Exiting login...");
-                    return new Person();  // Login failed, returning non-logged in client
+                    return new Person(); // Login failed, returning non-logged in client
                 }
             }
         }
     }
 
     private static Person createNewUser(ArrayList<User> users, Scanner scan) {
-        while (true) {  // Loop for retries
+        while (true) { // Loop for retries
             System.out.println("Creating an account...");
-    
+
             // Username input and validation loop
             String username;
             while (true) {
                 System.out.print("Username: ");
                 username = scan.nextLine();
-    
+
                 // Check if username already exists
                 boolean usernameExists = false;
                 for (User user : users) {
@@ -103,12 +107,12 @@ public class LoginSystem {
                         break;
                     }
                 }
-    
+
                 if (!usernameExists) {
-                    break;  // Username is valid, break out of loop
+                    break; // Username is valid, break out of loop
                 }
             }
-    
+
             // Prompt for the remaining user details
             System.out.print("Password: ");
             String password = scan.nextLine();
@@ -116,29 +120,34 @@ public class LoginSystem {
             String name = scan.nextLine();
             System.out.print("Phone: ");
             String phone = scan.nextLine();
-    
-            // Age input and validation loop
-            int age = 0;
-            while (true) {
-                System.out.print("Age: ");
+
+            // Entering valid birthDate
+            LocalDate birthDate = null;
+            boolean validDate = false;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            while (!validDate) {
+                System.out.print("Enter your birthdate (YYYY-MM-DD): ");
+                String dateInput = scan.nextLine();
                 try {
-                    age = Integer.parseInt(scan.nextLine());
-                    if (age < 0) {
-                        System.err.println("Age cannot be negative. Try again.");
+                    birthDate = LocalDate.parse(dateInput, formatter);
+                    if (birthDate.isAfter(LocalDate.now())) {
+                        System.out.println("Birthdate cannot be in the future. Please try again.");
                     } else {
-                        break;  // Valid age, exit loop
+                        validDate = true; // Date is valid
                     }
-                } catch (NumberFormatException e) {
-                    System.err.println("Invalid input for age. Please enter a valid number.");
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format. Please use YYYY-MM-DD.");
                 }
             }
-    
+
             // Create new user and add to system
-            User newUser = new User(name, phone, age, username, password);
-            users.add(newUser);  // Add the new user to the system
-    
+            long userId = 0; // For now all userId = 0, once db is connected, well let the db handle the user id
+            User newUser = new User(userId, name, phone, birthDate, username, password);
+            users.add(newUser); // Add the new user to the system
+
             System.out.println("Account created successfully!");
-            return newUser;  // Return the newly created user
+            return newUser; // Return the newly created user
         }
-    }    
+    }
 }

@@ -1,6 +1,8 @@
 package Actors;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+
 import Offerings.Offering;
 
 public class User extends Person {
@@ -8,14 +10,16 @@ public class User extends Person {
     private long userId;
     private String name;
     private String phone;
+    private LocalDate birthDate;
     private String username; // Will act as the pk in db
     private String password;
 
-    public User(long userId, String name, String phone, String username, String password) {
+    public User(long userId, String name, String phone, LocalDate birthDate, String username, String password) {
         super();
         this.userId = userId;
         this.name = name;
         this.phone = phone;
+        this.birthDate = birthDate;
         this.username = username;
         this.password = password;
     }

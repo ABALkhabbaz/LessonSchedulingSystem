@@ -1,9 +1,11 @@
 package Actors;
 
+import Offerings.Lesson;
+
 public class Client extends User {
 
-    public Client(String name, String phone) {
-        super(name, phone);
+    public Client(long userId, String name, String phone, String username, String password) {
+        super(userId, name, phone, username, password);
     }
 
     public void viewOffering() {
@@ -12,7 +14,7 @@ public class Client extends User {
 
     @Override
     public void displayRole() {
-        System.out.println("Client: " + name);
+        System.out.println("Client: " + getName());
     }
 
     public void bookLesson(Lesson lesson) {
