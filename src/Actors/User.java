@@ -82,7 +82,6 @@ public class User extends Person {
         }
     }
 
-    @Override
     public void displayRole() {
         System.out.println("Role: User");
     }
