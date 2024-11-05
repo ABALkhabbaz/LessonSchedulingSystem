@@ -4,13 +4,39 @@ import java.util.ArrayList;
 import Offerings.Offering;
 
 public class User extends Person {
-    private String username;
+    
+    private long userId;
+    private String name;
+    private String phone;
+    private String username; // Will act as the pk in db
     private String password;
 
-    public User(String name, String phone, String username, String password) {
-        super(name, phone);
+    public User(long userId, String name, String phone, String username, String password) {
+        super();
+        this.userId = userId;
+        this.name = name;
+        this.phone = phone;
         this.username = username;
         this.password = password;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getUsername() {
