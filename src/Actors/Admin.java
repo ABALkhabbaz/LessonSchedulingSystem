@@ -8,13 +8,14 @@ import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Scanner;
 
 public class Admin extends User {
 
-    public Admin(String name, String phone, int age, String username, String password) {
-        super(name, phone, age, username, password);
+    public Admin(long userId, String name, String phone, LocalDate birthDate, String username, String password) {
+        super(userId, name, phone, birthDate, username, password);
     }
 
     // Method to add a new lesson (renamed from addOffering)
