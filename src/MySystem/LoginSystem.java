@@ -18,6 +18,7 @@ public class LoginSystem {
         System.out.println("1. Login");
         System.out.println("2. Create a Client Account");
         System.out.println("3. Skip Login"); // For public access
+        System.out.println("4. Exit Program");
 
         int choice = new MySystem().getUserChoice(1, 3);
 
@@ -34,6 +35,8 @@ public class LoginSystem {
                 // Skip login, return a generic user --> Person
                 System.out.println("Skipping login...");
                 return null;
+            case 4:
+
         }
 
         return null;

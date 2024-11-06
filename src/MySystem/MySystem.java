@@ -44,26 +44,86 @@ public class MySystem {
             User user = loginSystem.promptUserLoginOrCreateAccount(users, scanner, dbHandler);
 
             if (user != null) {
+                // User is logged in
                 System.out.println("Login successful. Welcome, " + user.getName() + "!"); // We can choose between name and username
                 boolean userSession = true;
 
                 while (userSession) {
                     int option = displayMenuOption(user);
+                    
+                    if (user instanceof Admin){
+                        switch (option) {
+                            case 1:
+                            // "1. Create Offering"
+                                processOfferings((Admin) user);
+                                break;
+                            case 2:
+                            // "2. View Offerings"
+                                displayAvailableOfferings();
+                                break;
+                            case 3:
+                            // "3. Logout"
+                                System.out.println("Logging out...");
+                                userSession = false;
+                                break;
+                            case 4:
+                            // "4. Exit Program"
+                                close(0);
+                                break;
+                            default:
+                                break;
+                        }
+                    } else if (user instanceof Instructor){
+                        switch (option) {
+                            case 1:
+                                // "1. Select Offering"
+                                manageScheduling((Instructor) user);
+                                break;
+                            case 2:
+                                // "2. View Offerings"
+                                displayAvailableOfferings();
+                                break;
+                            case 3:
+                                // "3. Logout"
+                                System.out.println("Logging out...");
+                                userSession = false;
+                                break;
+                            case 4:
+                                // "4. Exit Program"
+                                close(0);
+                                break;
+                            default:
+                                break;
+                        }
+                    } else if (user instanceof Client){
+                        switch (option) {
+                            case 1:
+                                // "1. Browse Offerings"
+                                displayAvailableOfferings();
+                                break;
+                            case 2:
+                                // "2. Enroll in Lesson"
 
-                    if (user instanceof Admin && option == 1) {
-                        processOfferings((Admin) user);
-                    } else if (user instanceof Instructor && option == 1) {
-                        manageScheduling((Instructor) user);
-                    } else if (option == 2) {
-                        displayAvailableOfferings();
-                    } else if (option == 3) {
-                        System.out.println("Logging out...");
-                        userSession = false;
+                                break;
+                            case 3:
+                                // "3. Logout"
+                                System.out.println("Logging out...");
+                                userSession = false;
+                                break;
+                            case 4:
+                                // "4. Exit Program"
+                                close(0);
+                                break;
+                            default:
+                                break;
+                        }
                     } else {
                         System.out.println("Invalid option. Please try again.");
+                        close(-1);
                     }
                 }
             } else {
+                // Public access -- No user logged in
                 System.out.println("Client Option");
                 System.out.println("1. Display Available Lessons");
                 System.out.println("2. Main menu");
@@ -107,19 +167,22 @@ public class MySystem {
             System.out.println("1. Create Offering");
             System.out.println("2. View Offerings");
             System.out.println("3. Logout");
-            option = getUserChoice(1, 3);
+            System.err.println("4. Exit Program");
+            option = getUserChoice(1, 4);
         } else if (user instanceof Instructor) {
             System.out.println("Instructor Options:");
             System.out.println("1. Select Offering");
             System.out.println("2. View Offerings");
             System.out.println("3. Logout");
-            option = getUserChoice(1, 3);
+            System.out.println("4. Exit Program");
+            option = getUserChoice(1, 4);
         } else if (user instanceof Client) {
             System.out.println("Client Options:");
             System.out.println("1. Browse Offerings");
-            System.out.println("2. Enroll in Class");
+            System.out.println("2. Enroll in Lesson");
             System.out.println("3. Logout");
-            option = getUserChoice(1, 3);
+            System.out.println("4. Exit Program");
+            option = getUserChoice(1, 4);
         }
         return option;
     }
