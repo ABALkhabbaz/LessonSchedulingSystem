@@ -1,19 +1,17 @@
 package Booking;
 
-import java.util.ArrayList;
-
 import Actors.Client;
 import Offerings.Lesson;
 
 public class Booking {
     private long bookingId;
-    private ArrayList<Client> clients;
+    private Client client;
     private Lesson lesson;
 
-    public Booking(long bookingId,Lesson lesson) {
+    public Booking(long bookingId,Lesson lesson, Client client) {
         this.bookingId = bookingId;
         this.lesson = lesson;
-        this.clients = new ArrayList<Client>();
+        this.client = client;
     }
 
     public long getBookingId(){
@@ -24,12 +22,12 @@ public class Booking {
         this.bookingId = bookingId;
     }
 
-    public ArrayList<Client> getClients() {
-        return clients;
+    public Client getClient() {
+        return client;
     }
 
-    public void associateClient(Client client) {
-        clients.add(client);
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Lesson getLesson() {
@@ -41,10 +39,6 @@ public class Booking {
     }
 
     public void confirmBooking() {
-        System.out.println("Booking confirmed for client(s): ");
-        for (Client client : clients) {
-            System.out.println(client.getName());
-        }
-        System.out.println("for lesson: " + lesson.getDiscipline());
+        System.out.println("Booking confirmed for client: " + client.getName() + "for lesson: " + lesson.getDiscipline());
     }
 }
