@@ -4,6 +4,7 @@
 
 package DAO;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseInit {
@@ -16,6 +17,7 @@ public class DatabaseInit {
     try {
       dbHandler.connect();
       createTables(dbHandler);
+      addAdminUser(dbHandler);
     } catch (SQLException e) {
       System.out.println(e);
     }
@@ -23,7 +25,7 @@ public class DatabaseInit {
     dbHandler.disconnect();
   }
 
-  public static void createTables(DatabaseHandler dbHandler) throws SQLException {
+  private static void createTables(DatabaseHandler dbHandler) throws SQLException {
     createUsersTable(dbHandler);
     createClientsTable(dbHandler);
     createAdminTable(dbHandler);
@@ -153,5 +155,35 @@ public class DatabaseInit {
     dbHandler.executeUpdate(createBookingsTableSQL);
     System.out.println("Table 'Bookings' has been created or already exists.");
   }
+
+  private static void addAdminUser(DatabaseHandler dbHandler) throws SQLException {
+    String addAdminUserSQL = """
+            INSERT INTO Users (name, phone, birthDate, username, password, userType)
+            VALUES ('Admin', '1234567890', '1990-01-01', 'admin', 'admin', 'admin');
+        """;
+
+    dbHandler.executeUpdate(addAdminUserSQL);
+    System.out.println("Admin user has been added to 'Users'.");
+
+    // Retrieve the userId of the newly added admin
+    String getAdminUserIdSQL = "SELECT userId FROM Users WHERE username = 'admin'";
+    ResultSet resultSet = dbHandler.executeQuery(getAdminUserIdSQL);
+
+    if (resultSet.next()) {
+        long adminId = resultSet.getLong("userId");
+
+        // Insert into the Admins table
+        String addAdminToAdminsTableSQL = """
+                INSERT INTO Admins (adminId)
+                VALUES (?);
+            """;
+
+        dbHandler.executeUpdate(addAdminToAdminsTableSQL, adminId);
+        System.out.println("Admin user has been added to 'Admins'.");
+    } else {
+        System.out.println("Failed to retrieve admin userId.");
+    }
+}
+
 
 }
