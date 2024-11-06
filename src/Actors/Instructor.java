@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import Offerings.Offering;
+import Offerings.Lesson;
 
 public class Instructor extends User {
     private List<String> availableCities;
@@ -16,14 +16,14 @@ public class Instructor extends User {
         this.specialization = specialization;
     }
 
-    public Offering selectLesson(ArrayList<Offering> offerings, Scanner scan) {
+    public Lesson selectLesson(ArrayList<Lesson> lessons, Scanner scan) {
         System.out.println("Select an offering:");
-        for (int i = 0; i < offerings.size(); i++) {
-            System.out.println(i + 1 + ". " + offerings.get(i).getLesson().getDiscipline());
+        for (int i = 0; i < lessons.size(); i++) {
+            System.out.println(i + 1 + ". " + lessons.get(i).getDiscipline());
         }
         int choice = scan.nextInt();
-        if (choice > 0 && choice <= offerings.size()) {
-            return offerings.get(choice - 1);
+        if (choice > 0 && choice <= lessons.size()) {
+            return lessons.get(choice - 1);
         } else {
             System.out.println("Invalid choice.");
             return null;

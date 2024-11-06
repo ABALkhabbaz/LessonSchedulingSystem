@@ -3,7 +3,6 @@ package Actors;
 import LocationAndSchedule.Location;
 import LocationAndSchedule.Schedule;
 import Offerings.Lesson;
-import Offerings.Offering;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,7 +18,7 @@ public class Admin extends User {
     }
 
     // Method to add a new lesson (renamed from addOffering)
-    public void addLesson(ArrayList<Offering> offerings, Scanner scan) {
+    public Lesson addLesson(ArrayList<Lesson> lessons, Scanner scan) {
         System.out.println("====================================");
         System.out.println("Adding a New Lesson");
 
@@ -99,17 +98,17 @@ public class Admin extends User {
         boolean isPrivate = scan.nextLine().equalsIgnoreCase("yes");
 
         // Create a new lesson object
-        Lesson lesson = new Lesson(discipline, instructor, schedule, location, isPrivate);
-
-        // Create a new offering object
-        Offering newOffering = new Offering(lesson);
+        long lessonId = 0; // Use lessonId = 0 for now
+        Lesson newLesson = new Lesson(lessonId, discipline, instructor, schedule, location, isPrivate);
 
         // Add the new offering to the list
-        offerings.add(newOffering);
-
+        lessons.add(newLesson);
+    
         System.out.println("New lesson added successfully!");
-        System.out.println(newOffering);
+        System.out.println(newLesson);
         System.out.println("====================================");
+
+        return newLesson;
     }
 
     // Helper method to parse date from string

@@ -2,40 +2,24 @@ package MySystem;
 
 import Actors.*;
 
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 public class LoginSystem {
 
     // Pass in users and scanner from MySystem
-    public static Person promptUserLoginOrCreateAccount(ArrayList<User> users, Scanner scan) {
+    public User promptUserLoginOrCreateAccount(ArrayList<User> users, Scanner scan) {
         System.out.println("1. Login");
         System.out.println("2. Create Account");
         System.out.println("3. Skip Login"); // For public access
 
-        int choice = -1;
-
-        // Input validation for user choice
-        while (true) {
-            System.out.print("Enter your choice: ");
-            String userInput = scan.nextLine();
-
-            try {
-                choice = Integer.parseInt(userInput);
-
-                if (choice < 1 || choice > 3) {
-                    System.err.println("Invalid input. Please enter a number between 1 and 3.");
-                } else {
-                    break;
-                }
-            } catch (NumberFormatException e) {
-                System.err.println("Invalid input. Please enter a number.");
-            }
-        }
-
+        int choice = new MySystem().getUserChoice(1,3);
+        
         switch (choice) {
             case 1:
                 // Login process
@@ -44,12 +28,12 @@ public class LoginSystem {
                 // Create account process
                 return createNewUser(users, scan);
             case 3:
-                // Skip login, return a generic user
+                // Skip login, return a generic user --> Person
                 System.out.println("Skipping login...");
-                return null; // Returning null to indicate no login
-            default:
                 return null;
         }
+
+        return null;
     }
 
     public static User loginUser(ArrayList<User> users, Scanner scan) {
@@ -88,7 +72,7 @@ public class LoginSystem {
         }
     }
 
-    public static Person createNewUser(ArrayList<User> users, Scanner scan) {
+    public static Client createNewUser(ArrayList<User> users, Scanner scan) {
         while (true) { // Loop for retries
             System.out.println("Creating an account...");
 
@@ -141,9 +125,9 @@ public class LoginSystem {
                 }
             }
 
-            // Create new user and add to system
+            // Create new client and add to system
             long userId = 0; // For now all userId = 0, once db is connected, well let the db handle the user id
-            User newUser = new User(userId, name, phone, birthDate, username, password);
+            Client newUser = new Client(userId, name, phone, birthDate, username, password);
             users.add(newUser); // Add the new user to the system
 
             System.out.println("Account created successfully!");

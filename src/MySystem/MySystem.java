@@ -7,48 +7,110 @@ import Actors.Client;
 import Actors.Instructor;
 import Actors.Person;
 import Actors.User;
-import Offerings.Offering;
+import Offerings.Lesson;
 
 public class MySystem {
-    private ArrayList<Offering> offerings = new ArrayList<>();
+    private ArrayList<Lesson> lessons = new ArrayList<Lesson>();
     private LoginSystem loginSystem = new LoginSystem();
-    private ArrayList<User> users = new ArrayList<>(); // Keeps track of registered users
+    private ArrayList<User> users = new ArrayList<User>(); // Keeps track of registered users
+    private Scanner scanner = new Scanner(System.in);
+
+    // Run the system - Main loop
+    public void run() {
+        boolean isRunning = true;
+
+        while (isRunning) {
+
+            displayWelcomeMenu();
+            User user = loginSystem.promptUserLoginOrCreateAccount(users, scanner);
+
+            if (user != null) {
+                System.out.println("Login successful. Welcome, " + user.getName() + "!");
+                boolean userSession = true;
+
+                while (userSession) {
+                    int option = displayMenuOption(user);
+
+                    if (user instanceof Admin && option == 1) {
+                        processOfferings((Admin) user);
+                    } else if (user instanceof Instructor && option == 1) {
+                        manageScheduling((Instructor) user);
+                    } else if (option == 2) {
+                        displayAvailableOfferings();
+                    } else if (option == 3) {
+                        System.out.println("Logging out...");
+                        userSession = false;
+                    } else {
+                        System.out.println("Invalid option. Please try again.");
+                    }
+                }
+            } else {
+                System.out.println("Client Option");
+                System.out.println("1. Display Available Lessons");
+                System.out.println("2. Main menu");
+                System.out.println("3. Exit program");
+                int option = getUserChoice(1,3);
+
+                switch (option) {
+                    case 1:
+                        displayAvailableOfferings();
+                        break;
+                    case 2:
+                        // Go back to main menu
+                        break;
+                    case 3:
+                        // Exit
+                        isRunning = false;
+                        break;
+                }
+            }
+        }
+
+        close();
+    }
+
+    // Close the system - Cleanup or closing actions
+    public void close() {
+
+        scanner.close(); // Closes scanner
+        System.out.println("Thank you for using the Lesson Scheduling System. Goodbye!");
+    }
 
     // Display the welcome menu for the system
     public void displayWelcomeMenu() {
         System.out.println("Welcome to the Lesson Scheduling System");
-        System.out.println("1. Login");
-        System.out.println("2. Register");
-        System.out.println("3. Exit");
     }
 
     // Display options based on the user type
-    public int displayMenuOption(Person user) {
+    public int displayMenuOption(User user) {
+        int option = -1;
         if (user instanceof Admin) {
             System.out.println("Admin Options:");
             System.out.println("1. Create Offering");
             System.out.println("2. View Offerings");
             System.out.println("3. Logout");
+            option = getUserChoice(1, 3);
         } else if (user instanceof Instructor) {
             System.out.println("Instructor Options:");
             System.out.println("1. Select Offering");
             System.out.println("2. View Offerings");
             System.out.println("3. Logout");
+            option = getUserChoice(1, 3);
         } else if (user instanceof Client) {
             System.out.println("Client Options:");
             System.out.println("1. Browse Offerings");
             System.out.println("2. Enroll in Class");
             System.out.println("3. Logout");
+            option = getUserChoice(1, 3);
         }
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextInt();
+        return option;
     }
 
     // Process offerings - handles offering creation and management by Admin
-    public void processOfferings(Admin admin, Scanner scan) {
-        Offering offering = admin.addLesson(offerings, scan);
-        if (offering != null) {
-            offerings.add(offering);
+    public void processOfferings(Admin admin) {
+        Lesson lesson = admin.addLesson(lessons, scanner);
+        if (lesson != null) {
+            lessons.add(lesson);
             System.out.println("Offering added successfully.");
         } else {
             System.out.println("Failed to add offering.");
@@ -56,10 +118,10 @@ public class MySystem {
     }
 
     // Manage scheduling - For Instructor to select and manage their lessons
-    public void manageScheduling(Instructor instructor, Scanner scan) {
-        Offering selectedOffering = instructor.selectLesson(offerings, scan);
-        if (selectedOffering != null) {
-            System.out.println("Lesson selected: " + selectedOffering.getLesson().getDiscipline());
+    public void manageScheduling(Instructor instructor) {
+        Lesson selectedLesson = instructor.selectLesson(lessons, scanner);
+        if (selectedLesson != null) {
+            System.out.println("Lesson selected: " + selectedLesson.getDiscipline());
         } else {
             System.out.println("No available offerings selected.");
         }
@@ -67,73 +129,40 @@ public class MySystem {
 
     // Display available offerings to the public or any user type
     public void displayAvailableOfferings() {
-        if (offerings.isEmpty()) {
+        if (lessons.isEmpty()) {
             System.out.println("No offerings available at the moment.");
         } else {
             System.out.println("Available Offerings:");
-            for (Offering offering : offerings) {
-                System.out.println("- " + offering.getLesson().getDiscipline() + " by " + offering.getLesson().getInstructor().getName());
+            for (Lesson lesson : lessons) {
+                System.out.println("- " + lesson.getDiscipline() + " by "
+                        + lesson.getInstructor().getName());
             }
         }
     }
 
-    // Run the system - Main loop
-    public void run() {
-        Scanner scanner = new Scanner(System.in);
-        boolean isRunning = true;
+    public int getUserChoice(int min, int max) {
+        int choice = -1;
 
-        while (isRunning) {
-            displayWelcomeMenu();
-            int choice = scanner.nextInt();
+        // Input validation for user choice
+        while (true) {
+            System.out.print("Enter your choice: ");
 
-            switch (choice) {
-                case 1: // Login
-                    User user = loginSystem.loginUser(users, scanner);
-                    if (user != null) {
-                        System.out.println("Login successful. Welcome, " + user.getName() + "!");
-                        boolean userSession = true;
+            String userInput = scanner.nextLine().trim(); // Use the instance variable `scanner`
 
-                        while (userSession) {
-                            int option = displayMenuOption(user);
+            try {
+                choice = Integer.parseInt(userInput); // Attempt to parse choice
 
-                            if (user instanceof Admin && option == 1) {
-                                processOfferings((Admin) user, scanner);
-                            } else if (user instanceof Instructor && option == 1) {
-                                manageScheduling((Instructor) user, scanner);
-                            } else if (option == 2) {
-                                displayAvailableOfferings();
-                            } else if (option == 3) {
-                                System.out.println("Logging out...");
-                                userSession = false;
-                            } else {
-                                System.out.println("Invalid option. Please try again.");
-                            }
-                        }
-                    } else {
-                        System.out.println("Login failed. Please try again.");
-                    }
-                    break;
-
-                case 2: // Register
-                    loginSystem.createNewUser(users, scanner);
-                    System.out.println("Registration successful.");
-                    break;
-
-                case 3: // Exit
-                    System.out.println("Exiting the system...");
-                    isRunning = false;
-                    break;
-
-                default:
-                    System.out.println("Invalid choice. Please select a valid option.");
-                    break;
+                // Validate if choice is within acceptable range
+                if (choice >= min && choice <= max) {
+                    break; // Valid choice, exit the loop
+                } else {
+                    System.err.println("Invalid choice. Please enter a number between " + min + " and " + max + ".");
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid input. Please enter a number."); // Handle non-integer input
             }
         }
-        close();
+        return choice;
     }
 
-    // Close the system - Cleanup or closing actions
-    public void close() {
-        System.out.println("Thank you for using the Lesson Scheduling System. Goodbye!");
-    }
 }

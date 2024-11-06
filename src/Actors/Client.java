@@ -1,11 +1,13 @@
 package Actors;
 
+import java.time.LocalDate;
+
 import Offerings.Lesson;
 
 public class Client extends User {
 
-    public Client(long userId, String name, String phone, String username, String password) {
-        super(userId, name, phone, username, password);
+    public Client(long userId, String name, String phone, LocalDate birthDate, String username, String password) {
+        super(userId, name, phone, birthDate, username, password);
     }
 
     public void viewOffering() {
