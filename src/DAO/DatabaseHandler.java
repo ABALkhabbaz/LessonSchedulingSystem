@@ -11,11 +11,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import Actors.Admin;
 import Actors.Client;
 import Actors.Instructor;
 import Actors.User;
+import LocationAndSchedule.Schedule;
+import LocationAndSchedule.Location;
+import Offerings.Lesson;
 
 public class DatabaseHandler {
 
@@ -153,42 +157,9 @@ public class DatabaseHandler {
               rs.getString("password"));
         } else if ("instructor".equalsIgnoreCase(userType)) {
           // Query to fetch specialization and cities for an instructor
-          String instructorQuery = """
-                  SELECT u.userId, u.name, u.phone, u.birthDate, u.username, u.password,
-                      i.speciality, ac.city
-                  FROM Users u
-                  JOIN Instructors i ON u.userId = i.instructorId
-                  LEFT JOIN AvailableCities ac ON i.instructorId = ac.instructorId
-                  WHERE u.userId = ?
-              """;
+          foundUser = getInstructor(rs.getLong("userId"));
 
-          try (ResultSet instructorRs = executeQuery(instructorQuery,
-              rs.getLong("userId"))) {
-            String specialization = null;
-            ArrayList<String> availableCities = new ArrayList<>();
-
-            while (instructorRs.next()) {
-              if (specialization == null) {
-                specialization = instructorRs.getString("speciality");
-              }
-              String city = instructorRs.getString("city");
-              if (city != null) {
-                availableCities.add(city);
-              }
-            }
-
-            foundUser = new Instructor(
-                rs.getLong("userId"),
-                rs.getString("name"),
-                rs.getString("phone"),
-                rs.getDate("birthDate").toLocalDate(),
-                rs.getString("username"),
-                rs.getString("password"),
-                specialization,
-                availableCities);
-          }
-
-        } else {
+        } else if ("client".equalsIgnoreCase(userType)) {
           // Default to a regular User if userType is 'client' or any other value
           foundUser = new Client(
               rs.getLong("userId"),
@@ -197,6 +168,9 @@ public class DatabaseHandler {
               rs.getDate("birthDate").toLocalDate(),
               rs.getString("username"),
               rs.getString("password"));
+        } else {
+          System.err.println("Invalid user type: " + userType);
+          return null;
         }
 
         return foundUser; // Successfully authenticated
@@ -232,4 +206,102 @@ public class DatabaseHandler {
     }
     return null; // Failed to create account
   }
+
+  public ArrayList<Lesson> getLessons() throws SQLException {
+    List<Lesson> lessons = new ArrayList<>();
+    String getLessonsSQL = """
+            SELECT l.lessonId, l.discipline, l.instructorId, l.isPrivate, l.isAvailable,
+                   l.startDate, l.endDate, l.startTime, l.endTime, l.day,
+                   l.locationName, l.locationCity, l.locationProvince, l.locationAddress
+            FROM Lessons l
+        """;
+
+    try (ResultSet rs = executeQuery(getLessonsSQL)) {
+        while (rs.next()) {
+            long instructorId = rs.getLong("instructorId");
+            Instructor instructor = null;
+
+            // Use getInstructor method if instructorId is not null
+            if (instructorId != 0) {
+                instructor = getInstructor(instructorId);
+            }
+
+            // Create a Schedule object
+            Schedule schedule = new Schedule(
+                rs.getDate("startDate"),
+                rs.getDate("endDate"),
+                rs.getTime("startTime"),
+                rs.getTime("endTime"),
+                rs.getString("day")
+            );
+
+            // Create a Location object
+            Location location = new Location(
+                rs.getString("locationName"),
+                rs.getString("locationCity"),
+                rs.getString("locationProvince"),
+                rs.getString("locationAddress")
+            );
+
+            // Create a Lesson object
+            Lesson lesson = new Lesson(
+                rs.getLong("lessonId"),
+                rs.getString("discipline"),
+                instructor,
+                schedule,
+                location,
+                rs.getBoolean("isPrivate"),
+                rs.getBoolean("isAvailable")
+            );
+
+            lessons.add(lesson);
+        }
+    }
+
+    return lessons;
+}
+
+  public Instructor getInstructor(long instructorId) throws SQLException {
+    String instructorQuery = """
+            SELECT u.userId, u.name, u.phone, u.birthDate, u.username, u.password,
+                   i.speciality, ac.city
+            FROM Users u
+            JOIN Instructors i ON u.userId = i.instructorId
+            LEFT JOIN AvailableCities ac ON i.instructorId = ac.instructorId
+            WHERE u.userId = ?
+        """;
+
+    Instructor foundInstructor = null;
+    ArrayList<String> availableCities = new ArrayList<>();
+    String specialization = null;
+
+    try (ResultSet instructorRs = executeQuery(instructorQuery, instructorId)) {
+      boolean firstRow = true; // Flag to check if it's the first row
+
+      while (instructorRs.next()) {
+        if (firstRow) {
+          specialization = instructorRs.getString("speciality");
+          foundInstructor = new Instructor(
+              instructorRs.getLong("userId"),
+              instructorRs.getString("name"),
+              instructorRs.getString("phone"),
+              instructorRs.getDate("birthDate").toLocalDate(),
+              instructorRs.getString("username"),
+              instructorRs.getString("password"),
+              specialization,
+              availableCities);
+          firstRow = false; // Reset the flag after processing the first row
+        }
+
+        // Collect available cities for the instructor
+        String city = instructorRs.getString("city");
+        if (city != null && !availableCities.contains(city)) {
+          availableCities.add(city);
+        }
+      }
+    }
+
+    return foundInstructor;
+  }
+
 }

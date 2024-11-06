@@ -59,7 +59,7 @@ public class MySystem {
                                 break;
                             case 2:
                             // "2. View Offerings"
-                                displayAvailableOfferings();
+                                displayAvailableLessons();
                                 break;
                             case 3:
                             // "3. Logout"
@@ -81,7 +81,7 @@ public class MySystem {
                                 break;
                             case 2:
                                 // "2. View Offerings"
-                                displayAvailableOfferings();
+                                displayAvailableLessons();
                                 break;
                             case 3:
                                 // "3. Logout"
@@ -99,7 +99,7 @@ public class MySystem {
                         switch (option) {
                             case 1:
                                 // "1. Browse Offerings"
-                                displayAvailableOfferings();
+                                displayAvailableLessons();
                                 break;
                             case 2:
                                 // "2. Enroll in Lesson"
@@ -132,7 +132,7 @@ public class MySystem {
 
                 switch (option) {
                     case 1:
-                        displayAvailableOfferings();
+                        displayAvailableLessons();
                         break;
                     case 2:
                         // Go back to main menu
@@ -209,7 +209,16 @@ public class MySystem {
     }
 
     // Display available offerings to the public or any user type
-    public void displayAvailableOfferings() {
+    public void displayAvailableLessons() {
+
+        try {
+            lessons = dbHandler.getLessons();
+        } catch(SQLException e) {
+            e.printStackTrace();
+            close(-1);
+            return;
+        }
+        
         if (lessons.isEmpty()) {
             System.out.println("No offerings available at the moment.");
         } else {
