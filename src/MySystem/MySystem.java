@@ -44,7 +44,7 @@ public class MySystem {
             User user = loginSystem.promptUserLoginOrCreateAccount(users, scanner, dbHandler);
 
             if (user != null) {
-                System.out.println("Login successful. Welcome, " + user.getName() + "!");
+                System.out.println("Login successful. Welcome, " + user.getName() + "!"); // We can choose between name and username
                 boolean userSession = true;
 
                 while (userSession) {

@@ -199,7 +199,6 @@ public class DatabaseHandler {
               rs.getString("password"));
         }
 
-        System.out.println("Login successful. Welcome " + foundUser.getUsername() + "!");
         return foundUser; // Successfully authenticated
       } else {
         System.err.println("Invalid username or password.");
