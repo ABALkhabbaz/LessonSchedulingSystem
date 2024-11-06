@@ -30,6 +30,7 @@ public class DatabaseInit {
     createInstructorsTable(dbHandler);
     createAvailableCitiesTable(dbHandler);
     createLessonsTable(dbHandler);
+    createBookingsTable(dbHandler);
   }
 
   private static void createUsersTable(DatabaseHandler dbHandler) throws SQLException {
@@ -129,6 +130,28 @@ public class DatabaseInit {
 
     dbHandler.executeUpdate(createLessonsTableSQL);
     System.out.println("Table 'Lessons' has been created or already exists.");
+  }
+
+  public static void createBookingsTable(DatabaseHandler dbHandler) throws SQLException {
+    String createBookingsTableSQL = """
+            CREATE TABLE IF NOT EXISTS Bookings (
+                bookingId BIGINT AUTO_INCREMENT PRIMARY KEY,
+                lessonId BIGINT NOT NULL,
+                clientId BIGINT NOT NULL,
+
+                -- Foreign key constraint to link the booking to a lesson
+                FOREIGN KEY (lessonId) REFERENCES Lessons(lessonId) ON DELETE CASCADE,
+
+                -- Foreign key constraint to link the booking to a client
+                FOREIGN KEY (clientId) REFERENCES Clients(clientId) ON DELETE CASCADE,
+
+                -- Unique constraint to prevent duplicate bookings for the same client and lesson
+                UNIQUE (lessonId, clientId)
+            );
+        """;
+
+    dbHandler.executeUpdate(createBookingsTableSQL);
+    System.out.println("Table 'Bookings' has been created or already exists.");
   }
 
 }
