@@ -1,23 +1,40 @@
 package Booking;
 
+import java.util.ArrayList;
+
+import Actors.Client;
+import Offerings.Lesson;
+
 public class Booking {
-    private Client client;
+    private ArrayList<Client> clients;
     private Lesson lesson;
 
-    public Booking(Client client, Lesson lesson) {
-        this.client = client;
+    public Booking(Lesson lesson) {
         this.lesson = lesson;
+        this.clients = new ArrayList<Client>();
     }
 
-    public Client getClient() {
-        return client;
+    public ArrayList<Client> getClients() {
+        return clients;
+    }
+
+    public void associateClient(Client client) {
+        clients.add(client);
     }
 
     public Lesson getLesson() {
         return lesson;
     }
 
+    public void setLesson(Lesson lesson) {
+        this.lesson = lesson;
+    }
+
     public void confirmBooking() {
-        System.out.println("Booking confirmed for client: " + client.getName() + " for lesson: " + lesson.getDiscipline());
+        System.out.println("Booking confirmed for client(s): ");
+        for (Client client : clients) {
+            System.out.println(client.getName());
+        }
+        System.out.println("for lesson: " + lesson.getDiscipline());
     }
 }
