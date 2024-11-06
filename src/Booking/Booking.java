@@ -6,12 +6,22 @@ import Actors.Client;
 import Offerings.Lesson;
 
 public class Booking {
+    private long bookingId;
     private ArrayList<Client> clients;
     private Lesson lesson;
 
-    public Booking(Lesson lesson) {
+    public Booking(long bookingId,Lesson lesson) {
+        this.bookingId = bookingId;
         this.lesson = lesson;
         this.clients = new ArrayList<Client>();
+    }
+
+    public long getBookingId(){
+        return bookingId;
+    }
+
+    public void setBookingId(long bookingId) {
+        this.bookingId = bookingId;
     }
 
     public ArrayList<Client> getClients() {
