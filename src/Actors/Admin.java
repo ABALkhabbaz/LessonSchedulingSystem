@@ -99,7 +99,7 @@ public class Admin extends User {
 
         // Create a new lesson object
         long lessonId = 0; // Use lessonId = 0 for now
-        Lesson newLesson = new Lesson(lessonId, discipline, instructor, schedule, location, isPrivate);
+        Lesson newLesson = new Lesson(lessonId, discipline, instructor, schedule, location, isPrivate, true);
 
         // Add the new offering to the list
         lessons.add(newLesson);
