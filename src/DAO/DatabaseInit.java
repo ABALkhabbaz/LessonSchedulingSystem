@@ -23,18 +23,18 @@ public class DatabaseInit {
     dbHandler.disconnect();
   }
 
-  
   public static void createTables(DatabaseHandler dbHandler) throws SQLException {
-    createUserTable(dbHandler);
-    createClientTable(dbHandler);
+    createUsersTable(dbHandler);
+    createClientsTable(dbHandler);
     createAdminTable(dbHandler);
-    createInstructorTable(dbHandler);
+    createInstructorsTable(dbHandler);
     createAvailableCitiesTable(dbHandler);
+    createLessonsTable(dbHandler);
   }
 
-  private static void createUserTable(DatabaseHandler dbHandler) throws SQLException {
-    String createUserTableSQL = """
-            CREATE TABLE IF NOT EXISTS User (
+  private static void createUsersTable(DatabaseHandler dbHandler) throws SQLException {
+    String createUsersTableSQL = """
+            CREATE TABLE IF NOT EXISTS Users (
                 userId BIGINT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
                 phone VARCHAR(15),
@@ -45,44 +45,44 @@ public class DatabaseInit {
             );
         """;
 
-    dbHandler.executeUpdate(createUserTableSQL);
-    System.out.println("Table 'User' has been created or already exists.");
+    dbHandler.executeUpdate(createUsersTableSQL);
+    System.out.println("Table 'Users' has been created or already exists.");
   }
 
-  private static void createClientTable(DatabaseHandler dbHandler) throws SQLException {
-    String createClientTableSQL = """
-            CREATE TABLE IF NOT EXISTS Client (
+  private static void createClientsTable(DatabaseHandler dbHandler) throws SQLException {
+    String createClientsTableSQL = """
+            CREATE TABLE IF NOT EXISTS Clients (
                 clientId BIGINT PRIMARY KEY,
-                FOREIGN KEY (clientId) REFERENCES User(userId) ON DELETE CASCADE
+                FOREIGN KEY (clientId) REFERENCES Users(userId) ON DELETE CASCADE
             );
         """;
 
-    dbHandler.executeUpdate(createClientTableSQL);
-    System.out.println("Table 'Client' has been created or already exists.");
+    dbHandler.executeUpdate(createClientsTableSQL);
+    System.out.println("Table 'Clients' has been created or already exists.");
   }
 
   private static void createAdminTable(DatabaseHandler dbHandler) throws SQLException {
-    String createAdminTableSQL = """
-            CREATE TABLE IF NOT EXISTS Admin (
+    String createAdminsTableSQL = """
+            CREATE TABLE IF NOT EXISTS Admins (
                 adminId BIGINT PRIMARY KEY,
-                FOREIGN KEY (adminId) REFERENCES User(userId) ON DELETE CASCADE
+                FOREIGN KEY (adminId) REFERENCES Users(userId) ON DELETE CASCADE
             );
         """;
 
-    dbHandler.executeUpdate(createAdminTableSQL);
-    System.out.println("Table 'Admin' has been created or already exists.");
+    dbHandler.executeUpdate(createAdminsTableSQL);
+    System.out.println("Table 'Admins' has been created or already exists.");
   }
 
-  private static void createInstructorTable(DatabaseHandler dbHandler) throws SQLException {
-    String createInstructorTableSQL = """
-            CREATE TABLE IF NOT EXISTS Instructor (
+  private static void createInstructorsTable(DatabaseHandler dbHandler) throws SQLException {
+    String createInstructorsTableSQL = """
+            CREATE TABLE IF NOT EXISTS Instructors (
                 instructorId BIGINT PRIMARY KEY,
                 speciality VARCHAR(100) NOT NULL,
-                FOREIGN KEY (instructorId) REFERENCES User(userId) ON DELETE CASCADE
+                FOREIGN KEY (instructorId) REFERENCES Users(userId) ON DELETE CASCADE
             );
         """;
 
-    dbHandler.executeUpdate(createInstructorTableSQL);
+    dbHandler.executeUpdate(createInstructorsTableSQL);
     System.out.println("Table 'Instructor' has been created or already exists.");
   }
 
@@ -91,7 +91,7 @@ public class DatabaseInit {
             CREATE TABLE IF NOT EXISTS AvailableCities (
                 instructorId BIGINT,
                 city VARCHAR(100) NOT NULL,
-                FOREIGN KEY (instructorId) REFERENCES Instructor(instructorId) ON DELETE CASCADE,
+                FOREIGN KEY (instructorId) REFERENCES Instructors(instructorId) ON DELETE CASCADE,
                 PRIMARY KEY (instructorId, city)
             );
         """;
@@ -99,4 +99,36 @@ public class DatabaseInit {
     dbHandler.executeUpdate(createAvailableCitiesTableSQL);
     System.out.println("Table 'AvailableCities' has been created or already exists.");
   }
+
+  public static void createLessonsTable(DatabaseHandler dbHandler) throws SQLException {
+    String createLessonsTableSQL = """
+            CREATE TABLE IF NOT EXISTS Lessons (
+                lessonId BIGINT AUTO_INCREMENT PRIMARY KEY,
+                discipline VARCHAR(100) NOT NULL,
+                instructorId BIGINT NULL, -- Allow NULL values
+                isPrivate BOOLEAN NOT NULL,
+                isAvailable BOOLEAN NOT NULL,
+
+                -- Schedule fields
+                startDate DATE NOT NULL,
+                endDate DATE NOT NULL,
+                startTime TIME NOT NULL,
+                endTime TIME NOT NULL,
+                day ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
+
+                -- Location fields
+                locationName VARCHAR(100) NOT NULL,
+                locationCity VARCHAR(100) NOT NULL,
+                locationProvince VARCHAR(100) NOT NULL,
+                locationAddress VARCHAR(255) NOT NULL,
+
+                -- Foreign key constraint with SET NULL on delete
+                FOREIGN KEY (instructorId) REFERENCES Instructors(instructorId) ON DELETE SET NULL
+            );
+        """;
+
+    dbHandler.executeUpdate(createLessonsTableSQL);
+    System.out.println("Table 'Lessons' has been created or already exists.");
+  }
+
 }
