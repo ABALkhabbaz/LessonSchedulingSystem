@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 import Actors.Admin;
 import Actors.Client;
@@ -208,7 +207,7 @@ public class DatabaseHandler {
   }
 
   public ArrayList<Lesson> getLessons() throws SQLException {
-    List<Lesson> lessons = new ArrayList<>();
+    ArrayList<Lesson> lessons = new ArrayList<Lesson>();
     String getLessonsSQL = """
             SELECT l.lessonId, l.discipline, l.instructorId, l.isPrivate, l.isAvailable,
                    l.startDate, l.endDate, l.startTime, l.endTime, l.day,
