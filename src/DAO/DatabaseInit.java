@@ -101,7 +101,7 @@ public class DatabaseInit {
     System.out.println("Table 'AvailableCities' has been created or already exists.");
   }
 
-  public static void createLessonsTable(DatabaseHandler dbHandler) throws SQLException {
+  private static void createLessonsTable(DatabaseHandler dbHandler) throws SQLException {
     String createLessonsTableSQL = """
             CREATE TABLE IF NOT EXISTS Lessons (
                 lessonId BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -132,7 +132,7 @@ public class DatabaseInit {
     System.out.println("Table 'Lessons' has been created or already exists.");
   }
 
-  public static void createBookingsTable(DatabaseHandler dbHandler) throws SQLException {
+  private static void createBookingsTable(DatabaseHandler dbHandler) throws SQLException {
     String createBookingsTableSQL = """
             CREATE TABLE IF NOT EXISTS Bookings (
                 bookingId BIGINT AUTO_INCREMENT PRIMARY KEY,
