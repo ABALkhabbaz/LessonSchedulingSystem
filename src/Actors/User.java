@@ -3,7 +3,7 @@ package Actors;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import Offerings.Offering;
+import Offerings.Lesson;
 
 public class User extends Person {
     
@@ -71,13 +71,13 @@ public class User extends Person {
      * Displays the available offerings to the user.
      * @param offerings List of available offerings in the system.
      */
-    public void viewsOffering(ArrayList<Offering> offerings) {
+    public void viewsOffering(ArrayList<Lesson> lessons) {
         System.out.println(username + " is viewing available offerings:");
-        if (offerings.isEmpty()) {
+        if (lessons.isEmpty()) {
             System.out.println("No offerings available at the moment.");
         } else {
-            for (Offering offering : offerings) {
-                System.out.println(offering.toString()); // Adjusting to display Offering's details
+            for (Lesson lesson : lessons) {
+                System.out.println(lesson.toString()); // Adjusting to display Offering's details
             }
         }
     }
