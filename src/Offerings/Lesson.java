@@ -10,14 +10,16 @@ public class Lesson {
     private Schedule schedule;
     private Location location;
     private boolean isPrivate;
+    private boolean isAvailable;
 
-    public Lesson(long lessonId, String discipline, Instructor instructor, Schedule schedule, Location location, boolean isPrivate) {
+    public Lesson(long lessonId, String discipline, Instructor instructor, Schedule schedule, Location location, boolean isPrivate, boolean isAvailable) {
         this.lessonId = lessonId;
         this.discipline = discipline;
         this.instructor = instructor;
         this.schedule = schedule;
         this.location = location;
         this.isPrivate = isPrivate;
+        this.isAvailable = isAvailable; 
     }
 
     public long getLessonId() {
@@ -66,6 +68,14 @@ public class Lesson {
 
     public void setPrivate(boolean isPrivate) {
         this.isPrivate = isPrivate;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
     }
 
     /**
