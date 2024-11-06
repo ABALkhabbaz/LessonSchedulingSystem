@@ -7,6 +7,7 @@ import Actors.Admin;
 import Actors.Client;
 import Actors.Instructor;
 import Actors.User;
+import Actors.Person;
 import DAO.DatabaseHandler;
 import Offerings.Lesson;
 
@@ -59,7 +60,7 @@ public class MySystem {
                                 break;
                             case 2:
                             // "2. View Offerings"
-                                displayAvailableLessons();
+                                Person.displayAvailableLessons(dbHandler);
                                 break;
                             case 3:
                             // "3. Logout"
@@ -81,7 +82,7 @@ public class MySystem {
                                 break;
                             case 2:
                                 // "2. View Offerings"
-                                displayAvailableLessons();
+                                Person.displayAvailableLessons(dbHandler);
                                 break;
                             case 3:
                                 // "3. Logout"
@@ -99,7 +100,7 @@ public class MySystem {
                         switch (option) {
                             case 1:
                                 // "1. Browse Offerings"
-                                displayAvailableLessons();
+                                Person.displayAvailableLessons(dbHandler);
                                 break;
                             case 2:
                                 // "2. Enroll in Lesson"
@@ -132,7 +133,7 @@ public class MySystem {
 
                 switch (option) {
                     case 1:
-                        displayAvailableLessons();
+                        Person.displayAvailableLessons(dbHandler);
                         break;
                     case 2:
                         // Go back to main menu
@@ -208,27 +209,7 @@ public class MySystem {
         }
     }
 
-    // Display available offerings to the public or any user type
-    public void displayAvailableLessons() {
-
-        try {
-            lessons = dbHandler.getLessons();
-        } catch(SQLException e) {
-            e.printStackTrace();
-            close(-1);
-            return;
-        }
-        
-        if (lessons.isEmpty()) {
-            System.out.println("No offerings available at the moment.");
-        } else {
-            System.out.println("Available Offerings:");
-            for (Lesson lesson : lessons) {
-                System.out.println("- " + lesson.getDiscipline() + " by "
-                        + lesson.getInstructor().getName());
-            }
-        }
-    }
+    
 
     public int getUserChoice(int min, int max) {
         int choice = -1;
