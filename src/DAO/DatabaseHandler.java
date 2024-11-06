@@ -1,8 +1,6 @@
 /*
  * This is the entry point for db connectiona and running sql queries
  */
- 
-
 
 package DAO;
 
@@ -11,20 +9,26 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import Actors.Admin;
+import Actors.Client;
+import Actors.Instructor;
+import Actors.User;
 
 public class DatabaseHandler {
 
   // testing db connection
-  public static void main(String args[]){
+  public static void main(String args[]) {
 
     DatabaseHandler dbHandler = new DatabaseHandler();
-    
+
     try {
       dbHandler.connect();
-    } catch(SQLException e) {
+    } catch (SQLException e) {
       System.out.println(e);
     }
-
 
     dbHandler.disconnect();
   }
@@ -130,6 +134,103 @@ public class DatabaseHandler {
     return stmt.executeQuery();
   }
 
-  
+  public User getUser(String username, String password) throws SQLException {
+    // Query to find the user by username
+    User foundUser = null;
+    String sql = "SELECT * FROM Users WHERE username = ? AND password = ?";
+    try (ResultSet rs = executeQuery(sql, username, password)) {
+      if (rs.next()) {
+        // Create User object from result set data
+        String userType = rs.getString("userType");
 
+        if ("admin".equalsIgnoreCase(userType)) {
+          foundUser = new Admin(
+              rs.getLong("userId"),
+              rs.getString("name"),
+              rs.getString("phone"),
+              rs.getDate("birthDate").toLocalDate(),
+              rs.getString("username"),
+              rs.getString("password"));
+        } else if ("instructor".equalsIgnoreCase(userType)) {
+          // Query to fetch specialization and cities for an instructor
+          String instructorQuery = """
+                  SELECT u.userId, u.name, u.phone, u.birthDate, u.username, u.password,
+                      i.speciality, ac.city
+                  FROM Users u
+                  JOIN Instructors i ON u.userId = i.instructorId
+                  LEFT JOIN AvailableCities ac ON i.instructorId = ac.instructorId
+                  WHERE u.userId = ?
+              """;
+
+          try (ResultSet instructorRs = executeQuery(instructorQuery,
+              rs.getLong("userId"))) {
+            String specialization = null;
+            ArrayList<String> availableCities = new ArrayList<>();
+
+            while (instructorRs.next()) {
+              if (specialization == null) {
+                specialization = instructorRs.getString("speciality");
+              }
+              String city = instructorRs.getString("city");
+              if (city != null) {
+                availableCities.add(city);
+              }
+            }
+
+            foundUser = new Instructor(
+                rs.getLong("userId"),
+                rs.getString("name"),
+                rs.getString("phone"),
+                rs.getDate("birthDate").toLocalDate(),
+                rs.getString("username"),
+                rs.getString("password"),
+                specialization,
+                availableCities);
+          }
+
+        } else {
+          // Default to a regular User if userType is 'client' or any other value
+          foundUser = new Client(
+              rs.getLong("userId"),
+              rs.getString("name"),
+              rs.getString("phone"),
+              rs.getDate("birthDate").toLocalDate(),
+              rs.getString("username"),
+              rs.getString("password"));
+        }
+
+        System.out.println("Login successful. Welcome " + foundUser.getUsername() + "!");
+        return foundUser; // Successfully authenticated
+      } else {
+        System.err.println("Invalid username or password.");
+        return null;
+      }
+    }
+  }
+
+  public Client insertClient(String name, String phone, LocalDate birthDate, String username, String password) {
+    // Insert the new client into the database
+    String insertSQL = """
+            INSERT INTO Users (name, phone, birthDate, username, password, userType)
+            VALUES (?, ?, ?, ?, ?, 'client')
+        """;
+
+    try {
+      executeUpdate(insertSQL, name, phone, java.sql.Date.valueOf(birthDate), username, password);
+      System.out.println("Account created successfully!");
+
+      // Retrieve the generated userId
+      String getUserSQL = "SELECT userId FROM Users WHERE username = ?";
+      try (ResultSet rs = executeQuery(getUserSQL, username)) {
+        if (rs.next()) {
+          long userId = rs.getLong("userId");
+          return new Client(userId, name, phone, birthDate, username, password); // Sccessfully created account
+        }
+      }
+    } catch (SQLException e) {
+      System.err.println("Database error: " + e.getMessage());
+      return null;
+    }
+    return null; // Failed to create account
+  }
 }

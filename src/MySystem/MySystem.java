@@ -1,18 +1,38 @@
 package MySystem;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import Actors.Admin;
 import Actors.Client;
 import Actors.Instructor;
 import Actors.User;
+import DAO.DatabaseHandler;
 import Offerings.Lesson;
 
 public class MySystem {
-    private ArrayList<Lesson> lessons = new ArrayList<Lesson>();
-    private LoginSystem loginSystem = new LoginSystem();
-    private ArrayList<User> users = new ArrayList<User>(); // Keeps track of registered users
-    private Scanner scanner = new Scanner(System.in);
+    private ArrayList<Lesson> lessons;
+    private LoginSystem loginSystem;
+    private ArrayList<User> users; 
+    private Scanner scanner;
+    private DatabaseHandler dbHandler;
+
+    public MySystem() {
+
+        dbHandler = new DatabaseHandler();
+        try {
+            dbHandler.connect();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            close(-1);
+        }
+
+        lessons = new ArrayList<Lesson>();
+        loginSystem = new LoginSystem();
+        users = new ArrayList<User>();
+        scanner = new Scanner(System.in);
+        
+    }
 
     // Run the system - Main loop
     public void run() {
@@ -21,7 +41,7 @@ public class MySystem {
         while (isRunning) {
 
             displayWelcomeMenu();
-            User user = loginSystem.promptUserLoginOrCreateAccount(users, scanner);
+            User user = loginSystem.promptUserLoginOrCreateAccount(users, scanner, dbHandler);
 
             if (user != null) {
                 System.out.println("Login successful. Welcome, " + user.getName() + "!");
@@ -64,15 +84,14 @@ public class MySystem {
                 }
             }
         }
-
-        close();
     }
 
     // Close the system - Cleanup or closing actions
-    public void close() {
-
+    public void close(int exitCode) {
         scanner.close(); // Closes scanner
+        dbHandler.disconnect(); // Disconnects db
         System.out.println("Thank you for using the Lesson Scheduling System. Goodbye!");
+        System.exit(exitCode);
     }
 
     // Display the welcome menu for the system
