@@ -5,7 +5,6 @@ import java.util.Scanner;
 import Actors.Admin;
 import Actors.Client;
 import Actors.Instructor;
-import Actors.Person;
 import Actors.User;
 import Offerings.Lesson;
 
