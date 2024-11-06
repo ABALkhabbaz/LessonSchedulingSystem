@@ -3,21 +3,29 @@ package Offerings;
 import LocationAndSchedule.Location;
 import LocationAndSchedule.Schedule;
 import Actors.Instructor;
-import LocationAndSchedule.*;
-
 public class Lesson {
+    private long lessonId;
     private String discipline;
     private Instructor instructor;
     private Schedule schedule;
     private Location location;
     private boolean isPrivate;
 
-    public Lesson(String discipline, Instructor instructor, Schedule schedule, Location location, boolean isPrivate) {
+    public Lesson(long lessonId, String discipline, Instructor instructor, Schedule schedule, Location location, boolean isPrivate) {
+        this.lessonId = lessonId;
         this.discipline = discipline;
         this.instructor = instructor;
         this.schedule = schedule;
         this.location = location;
         this.isPrivate = isPrivate;
+    }
+
+    public long getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(long lessonId) {
+        this.lessonId = lessonId;
     }
 
     public String getDiscipline() {
@@ -65,6 +73,7 @@ public class Lesson {
      */
     public void specificLessonDetails() {
         System.out.println("Lesson Details:");
+        System.out.println("LessonId: " + lessonId);
         System.out.println("Discipline: " + discipline);
         System.out.println("Instructor: " + (instructor != null ? instructor.getName() : "No Instructor Assigned"));
         System.out.println("Schedule: " + (schedule != null ? schedule.toString() : "No Schedule Assigned"));
@@ -74,6 +83,6 @@ public class Lesson {
 
     @Override
     public String toString() {
-        return "Lesson [Discipline=" + discipline + ", Instructor=" + (instructor != null ? instructor.getName() : "N/A") + "]";
+        return "Lesson [LessonId=" + lessonId + "Discipline=" + discipline + ", Instructor=" + (instructor != null ? instructor.getName() : "N/A") + "]";
     }
 }
