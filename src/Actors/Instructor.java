@@ -31,7 +31,7 @@ public class Instructor extends User {
             e.printStackTrace();
         }
 
-        if(lessons == null || lessons.isEmpty()) {
+        if (lessons == null || lessons.isEmpty()) {
             System.out.println("No lessons available.");
             return null;
         }
@@ -67,9 +67,32 @@ public class Instructor extends User {
     public long getInstructorId() {
         return getUserId();
     }
-    
+
     @Override
     public void displayRole() {
         System.out.println("Instructor: " + getName());
+    }
+
+    public void updateLesson(DatabaseHandler dbHandler, Scanner scanner) {
+        ArrayList<Lesson> lessons = null;
+        Lesson lesson = null;
+        
+        lessons = dbHandler.getLessonsByInstructor(this);
+
+        if (lessons == null || lessons.isEmpty()) {
+            System.out.println("No lessons available.");
+            return;
+        }
+
+        System.out.println("Select an offering to drop:");
+        for (int i = 0; i < lessons.size(); i++) {
+            System.out.println(i + 1 + ". " + lessons.get(i).toString());
+        }
+        int choice = new MySystem().getUserChoice(1, lessons.size());
+        lesson = lessons.get(choice - 1);
+
+        // Remove instructor from lesson
+        lesson.setInstructor(null);
+        dbHandler.updateInstructorOfLesson(lesson, null);
     }
 }

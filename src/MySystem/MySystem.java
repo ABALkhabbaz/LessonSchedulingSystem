@@ -96,16 +96,20 @@ public class MySystem {
                                 // Issue here
                                 break;
                             case 2:
-                                // "2. View Offerings"
+                                // "2. View Availabe Offerings"
                                 Person.displayAvailableLessons(dbHandler);
                                 break;
                             case 3:
-                                // "3. Logout"
+                                // "3. Remove yourself from a lesson"
+                                instructor.updateLesson(dbHandler, scanner);
+                                break;
+                            case 4:
+                                // "4. Logout"
                                 System.out.println("Logging out...");
                                 userSession = false;
                                 break;
-                            case 4:
-                                // "4. Exit Program"
+                            case 5:
+                                // "5. Exit Program"
                                 close(0);
                                 break;
                             default:
@@ -189,10 +193,11 @@ public class MySystem {
         } else if (user instanceof Instructor) {
             System.out.println("Instructor Options:");
             System.out.println("1. Select Offering");
-            System.out.println("2. View Offerings");
-            System.out.println("3. Logout");
-            System.out.println("4. Exit Program");
-            option = getUserChoice(1, 4);
+            System.out.println("2. View Available Offerings");
+            System.out.println("3. Remove yourself from a lesson");
+            System.out.println("4. Logout");
+            System.out.println("5. Exit Program");
+            option = getUserChoice(1, 5);
         } else if (user instanceof Client) {
             System.out.println("Client Options:");
             System.out.println("1. Browse Offerings");

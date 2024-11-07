@@ -697,4 +697,48 @@ public class DatabaseHandler {
     return false;
   }
 
+  public ArrayList<Lesson> getLessonsByInstructor(Instructor instructor) {
+    ArrayList<Lesson> lessons = new ArrayList<Lesson>();
+    String getLessonsSQL = """
+            SELECT *
+            FROM Lessons
+            WHERE instructorId = ?
+        """;
+
+    try (ResultSet rs = executeQuery(getLessonsSQL, instructor.getInstructorId())) {
+      while (rs.next()) {
+        // Create a Schedule object
+        Schedule schedule = new Schedule(
+            rs.getDate("startDate"),
+            rs.getDate("endDate"),
+            rs.getTime("startTime"),
+            rs.getTime("endTime"),
+            rs.getString("day"));
+
+        // Create a Location object
+        Location location = new Location(
+            rs.getString("locationName"),
+            rs.getString("locationCity"),
+            rs.getString("locationProvince"),
+            rs.getString("locationAddress"));
+
+        // Create a Lesson object
+        Lesson lesson = new Lesson(
+            rs.getLong("lessonId"),
+            rs.getString("discipline"),
+            instructor,
+            schedule,
+            location,
+            rs.getBoolean("isPrivate"),
+            rs.getBoolean("isAvailable"));
+
+        lessons.add(lesson);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return lessons;
+  }
+
 }
