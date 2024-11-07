@@ -391,4 +391,50 @@ public class DatabaseHandler {
 
     return lessons;
   }
+
+  public void updateLesson(Lesson lesson) {
+    String updateLessonSQL = """
+            UPDATE Lessons
+            SET discipline = ?,
+                instructorId = ?,
+                isPrivate = ?,
+                isAvailable = ?,
+                startDate = ?,
+                endDate = ?,
+                startTime = ?,
+                endTime = ?,
+                day = ?,
+                locationName = ?,
+                locationCity = ?,
+                locationProvince = ?,
+                locationAddress = ?
+            WHERE lessonId = ?
+        """;
+
+    try {
+      executeUpdate(updateLessonSQL,
+          lesson.getDiscipline(),
+          lesson.getInstructor(),
+          lesson.isPrivate(),
+          lesson.isAvailable(),
+          lesson.getSchedule().getStartDate(),
+          lesson.getSchedule().getEndDate(),
+          lesson.getSchedule().getStartTime(),
+          lesson.getSchedule().getEndTime(),
+          lesson.getSchedule().getDay(),
+          lesson.getLocation().getName(),
+          lesson.getLocation().getCity(),
+          lesson.getLocation().getProvince(),
+          lesson.getLocation().getAddress(),
+          lesson.getLessonId());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    System.out.println("Lesson updated successfully!");
+  }
+
+
+
+
 }

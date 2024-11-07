@@ -75,15 +75,19 @@ public class MySystem {
                                 admin.addLesson(dbHandler, scanner);
                                 break;
                             case 2:
-                                // "2. View Offerings"
+                                // "2. View Lessons"
                                 admin.displayAllLessons(dbHandler);
                                 break;
                             case 3:
-                                // "3. Logout"
+                                // "3. Update Lesson"
+                                admin.updateLesson(dbHandler, scanner);
+                                break;
+                            case 4:
+                                // "4. Logout"
                                 System.out.println("Logging out...");
                                 userSession = false;
                                 break;
-                            case 4:
+                            case 5:
                                 // "4. Exit Program"
                                 close(0);
                                 break;
@@ -94,6 +98,7 @@ public class MySystem {
                         switch (option) {
                             case 1:
                                 // "1. Select Offering"
+                                
                                 manageScheduling((Instructor) user);
                                 break;
                             case 2:
@@ -183,9 +188,10 @@ public class MySystem {
             System.out.println("Admin Options:");
             System.out.println("1. Create Offering");
             System.out.println("2. View Offerings");
-            System.out.println("3. Logout");
-            System.err.println("4. Exit Program");
-            option = getUserChoice(1, 4);
+            System.out.println("3. Update Offering");
+            System.out.println("4. Logout");
+            System.err.println("5. Exit Program");
+            option = getUserChoice(1, 5);
         } else if (user instanceof Instructor) {
             System.out.println("Instructor Options:");
             System.out.println("1. Select Offering");

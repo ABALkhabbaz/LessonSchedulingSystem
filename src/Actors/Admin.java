@@ -133,7 +133,7 @@ public class Admin extends User {
     public void displayAllLessons(DatabaseHandler dbHandler) {
 
         ArrayList<Lesson> lessons = getLessons(dbHandler);
-        
+
         System.out.println("====================================");
         System.out.println("All Lessons");
         for (Lesson lesson : lessons) {
@@ -142,6 +142,151 @@ public class Admin extends User {
         System.out.println("====================================");
     }
     
+    // Method to update a lesson
+    public void updateLesson(DatabaseHandler dbHandler, Scanner scan) {
+        System.out.println("====================================");
+        System.out.println("Updating a Lesson");
+
+        // Get all lessons
+        ArrayList<Lesson> lessons = getLessons(dbHandler);
+
+        // Display all lessons
+        System.out.println("Select a lesson to update:");
+        for (int i = 0; i < lessons.size(); i++) {
+            System.out.println((i + 1) + ". " + lessons.get(i));
+        }
+
+        // Get the lesson index to update
+        int lessonIndex = -1;
+        while (lessonIndex < 0 || lessonIndex >= lessons.size()) {
+            System.out.print("Enter lesson number: ");
+            lessonIndex = scan.nextInt() - 1;
+            scan.nextLine(); // Consume newline character
+            if (lessonIndex < 0 || lessonIndex >= lessons.size()) {
+                System.err.println("Invalid lesson number. Please try again.");
+            }
+        }
+
+        // Get the lesson to update
+        Lesson lesson = lessons.get(lessonIndex);
+
+        // Collect lesson details from the admin
+        System.out.print("Enter discipline [" + lesson.getDiscipline() + "]: ");
+        String discipline = scan.nextLine();
+        if (!discipline.isEmpty()) {
+            lesson.setDiscipline(discipline);
+        }
+
+        // Parse start date
+        Date startDate = null;
+        while (startDate == null) {
+            System.out.print("Enter start date (YYYY-MM-DD) [" + lesson.getSchedule().getStartDate() + "]: ");
+            String startDateStr = scan.nextLine();
+            if (startDateStr.isEmpty()) {
+                startDate = lesson.getSchedule().getStartDate();
+            } else {
+                startDate = parseDate(startDateStr);
+                if (startDate == null) {
+                    System.err.println("Invalid date format. Please try again.");
+                }
+            }
+        }
+
+        // Parse end date
+        Date endDate = null;
+        while (endDate == null) {
+            System.out.print("Enter end date (YYYY-MM-DD) [" + lesson.getSchedule().getEndDate() + "]: ");
+            String endDateStr = scan.nextLine();
+            if (endDateStr.isEmpty()) {
+                endDate = lesson.getSchedule().getEndDate();
+            } else {
+                endDate = parseDate(endDateStr);
+                if (endDate == null) {
+                    System.err.println("Invalid date format. Please try again.");
+                }
+            }
+        }
+
+        // Parse start time
+        Time startTime = null;
+        while (startTime == null) {
+            System.out.print("Enter start time (HH:MM) [" + lesson.getSchedule().getStartTime() + "]: ");
+            String startTimeStr = scan.nextLine();
+            if (startTimeStr.isEmpty()) {
+                startTime = lesson.getSchedule().getStartTime();
+            } else {
+                startTime = parseTime(startTimeStr);
+                if (startTime == null) {
+                    System.err.println("Invalid time format. Please try again.");
+                }
+            }
+        }
+
+        // Parse end time
+        Time endTime = null;
+        while (endTime == null) {
+            System.out.print("Enter end time (HH:MM) [" + lesson.getSchedule().getEndTime() + "]: ");
+            String endTimeStr = scan.nextLine();
+            if (endTimeStr.isEmpty()) {
+                endTime = lesson.getSchedule().getEndTime();
+            } else {
+                endTime = parseTime(endTimeStr);
+                if (endTime == null) {
+                    System.err.println("Invalid time format. Please try again.");
+                }
+            }
+        }
+
+        System.out.print("Enter day of the week [" + lesson.getSchedule().getDay() + "]: ");
+        String day = scan.nextLine();
+        if (!day.isEmpty()) {
+            lesson.getSchedule().setDay(day);
+        }
+
+        // Collect location details
+        System.out.print("Enter location name [" + lesson.getLocation().getName() + "]: ");
+        String locationName = scan.nextLine();
+        if (!locationName.isEmpty()) {
+            lesson.getLocation().setName(locationName);
+        }
+
+        System.out.print("Enter city [" + lesson.getLocation().getCity() + "]: ");
+        String city = scan.nextLine();
+        if (!city.isEmpty()) {
+            lesson.getLocation().setCity(city);
+        }
+
+        System.out.print("Enter province [" + lesson.getLocation().getProvince() + "]: ");
+        String province = scan.nextLine();
+        if (!province.isEmpty()) {
+            lesson.getLocation().setProvince(province);
+        }
+
+        System.out.print("Enter address [" + lesson.getLocation().getAddress() + "]: ");
+        String address = scan.nextLine();
+        if (!address.isEmpty()) {
+            lesson.getLocation().setAddress(address);
+        }
+
+        System.out.print("Is the lesson private? (yes/no) [" + (lesson.isPrivate() ? "yes" : "no") + "]: ");
+        String isPrivateStr = scan.nextLine();
+        if (!isPrivateStr.isEmpty()) {
+            lesson.setPrivate(isPrivateStr.equalsIgnoreCase("yes"));
+        }
+
+        // Update the lesson
+        try {
+            dbHandler.updateLesson(lesson);
+        } catch (Exception e) {
+            System.err.println("Failed to update lesson. Please try again.");
+            return;
+        }
+
+        System.out.println("Lesson updated successfully!");
+    }
+
+
+
     // Helper method to parse date from string
     private Date parseDate(String dateStr) {
         try {

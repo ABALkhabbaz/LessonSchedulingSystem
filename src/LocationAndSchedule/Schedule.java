@@ -40,6 +40,25 @@ public class Schedule {
         return day;
     }
 
+    // Setter methods
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
+    }
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
+    }
+    public void setDay(String day) {
+        this.day = day;
+    }
+    
+
+
     // Example of a method to display schedule details
     @Override
     public String toString() {
