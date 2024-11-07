@@ -19,6 +19,7 @@ import Actors.Admin;
 import Actors.Client;
 import Actors.Instructor;
 import Actors.User;
+import Booking.Booking;
 import LocationAndSchedule.Schedule;
 import LocationAndSchedule.Location;
 import Offerings.Lesson;
@@ -198,12 +199,18 @@ public class DatabaseHandler {
     try {
       executeUpdate(insertSQL, name, phone, java.sql.Date.valueOf(birthDate), username, password);
       System.out.println("Account created successfully!");
-
       // Retrieve the generated userId
       String getUserSQL = "SELECT userId FROM Users WHERE username = ?";
       try (ResultSet rs = executeQuery(getUserSQL, username)) {
         if (rs.next()) {
           long userId = rs.getLong("userId");
+
+          String insertClientSQL = """
+                  INSERT INTO Clients (clientId)
+                  VALUES (?)
+              """; // Insert the client into the Clients table
+          executeUpdate(insertClientSQL, userId);
+
           return new Client(userId, name, phone, birthDate, username, password); // Sccessfully created account
         }
       }
@@ -548,4 +555,100 @@ public class DatabaseHandler {
       e.printStackTrace();
     }
   }
+
+  public ArrayList<Lesson> getAvailableToBookLessons() throws SQLException {
+    ArrayList<Lesson> lessons = new ArrayList<Lesson>();
+    String getLessonsSQL = """
+            SELECT *
+            FROM Lessons
+            WHERE isAvailable = true and instructorId IS NOT NULL
+        """;
+
+    try (ResultSet rs = executeQuery(getLessonsSQL)) {
+      while (rs.next()) {
+        long instructorId = rs.getLong("instructorId");
+        Instructor instructor = null;
+
+        // Use getInstructor method if instructorId is not null
+        if (instructorId != 0) {
+          instructor = getInstructor(instructorId);
+        }
+
+        // Create a Schedule object
+        Schedule schedule = new Schedule(
+            rs.getDate("startDate"),
+            rs.getDate("endDate"),
+            rs.getTime("startTime"),
+            rs.getTime("endTime"),
+            rs.getString("day"));
+
+        // Create a Location object
+        Location location = new Location(
+            rs.getString("locationName"),
+            rs.getString("locationCity"),
+            rs.getString("locationProvince"),
+            rs.getString("locationAddress"));
+
+        // Create a Lesson object
+        Lesson lesson = new Lesson(
+            rs.getLong("lessonId"),
+            rs.getString("discipline"),
+            instructor,
+            schedule,
+            location,
+            rs.getBoolean("isPrivate"),
+            rs.getBoolean("isAvailable"));
+
+        lessons.add(lesson);
+      }
+    }
+
+    return lessons;
+  }
+
+  public Booking insertNewBooking(Lesson lesson, Client client) {
+    // Insert the new booking into the database
+    String insertSQL = """
+            INSERT INTO Bookings (lessonId, clientId)
+            VALUES (?, ?)
+        """;
+
+    try {
+      executeUpdate(insertSQL, lesson.getLessonId(), client.getUserId());
+      System.out.println("Booking created successfully!");
+
+      // Retrieve the generated bookingId
+      String getBookingSQL = "SELECT bookingId FROM Bookings WHERE lessonId = ? AND clientId = ?";
+      try (ResultSet rs = executeQuery(getBookingSQL, lesson.getLessonId(), client.getUserId())) {
+        if (rs.next()) {
+          long bookingId = rs.getLong("bookingId");
+          return new Booking(bookingId, lesson, client);
+        }
+      }
+    } catch (SQLException e) {
+      System.err.println("Database error: " + e.getMessage());
+      return null;
+    }
+
+    return null; // Failed to create booking
+  }
+
+  public void updateLessonAvailability(Lesson lesson, boolean b) {
+    // Update the availability of the lesson
+    String updateLessonSQL = """
+            UPDATE Lessons
+            SET isAvailable = ?
+            WHERE lessonId = ?
+        """;
+
+    try {
+      executeUpdate(updateLessonSQL, b, lesson.getLessonId());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    System.out.println("Lesson availability updated successfully!");
+  }
+
+
 }

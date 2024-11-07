@@ -119,7 +119,7 @@ public class MySystem {
                                 break;
                             case 2:
                                 // "2. Enroll in Lesson"
-
+                                client.enrollInLesson(dbHandler, scanner);
                                 break;
                             case 3:
                                 // "3. Logout"
