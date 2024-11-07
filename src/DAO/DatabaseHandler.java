@@ -534,4 +534,18 @@ public class DatabaseHandler {
     return null; // Failed to create account
   }
 
+  public void updateInstructorOfLesson(Lesson lesson, Instructor instructor) {
+    // Update the instructorId of the lesson
+    String updateLessonSQL = """
+            UPDATE Lessons
+            SET instructorId = ?
+            WHERE lessonId = ?
+        """;
+
+    try {
+      executeUpdate(updateLessonSQL, instructor.getUserId(), lesson.getLessonId());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 }

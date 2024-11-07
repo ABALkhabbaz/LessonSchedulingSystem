@@ -44,6 +44,7 @@ public class Instructor extends User {
         lesson = lessons.get(choice - 1);
 
         lesson.setInstructor(this);
+        dbHandler.updateInstructorOfLesson(lesson, this);
         return lesson;
     }
 
