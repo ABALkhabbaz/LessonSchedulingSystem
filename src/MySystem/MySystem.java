@@ -1,7 +1,6 @@
 package MySystem;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Scanner;
 import Actors.Admin;
 import Actors.Client;
@@ -9,12 +8,9 @@ import Actors.Instructor;
 import Actors.User;
 import Actors.Person;
 import DAO.DatabaseHandler;
-import Offerings.Lesson;
 
 public class MySystem {
-    private ArrayList<Lesson> lessons;
     private LoginSystem loginSystem;
-    private ArrayList<User> users;
     private Scanner scanner;
     private DatabaseHandler dbHandler;
 
@@ -28,9 +24,7 @@ public class MySystem {
             close(-1);
         }
 
-        lessons = new ArrayList<Lesson>();
         loginSystem = new LoginSystem();
-        users = new ArrayList<User>();
         scanner = new Scanner(System.in);
 
     }
@@ -42,7 +36,7 @@ public class MySystem {
         while (isRunning) {
 
             displayWelcomeMenu();
-            User user = loginSystem.promptUserLoginOrCreateAccount(users, scanner, dbHandler);
+            User user = loginSystem.promptUserLoginOrCreateAccount(dbHandler, scanner, this);
 
             if (user != null) {
                 // User is logged in
@@ -88,7 +82,7 @@ public class MySystem {
                                 userSession = false;
                                 break;
                             case 5:
-                                // "4. Exit Program"
+                                // "5. Exit Program"
                                 close(0);
                                 break;
                             default:
@@ -98,7 +92,8 @@ public class MySystem {
                         switch (option) {
                             case 1:
                                 // "1. Select Offering"
-                                manageScheduling((Instructor) user);
+                                instructor.selectLesson(dbHandler, scanner);
+                                // Issue here
                                 break;
                             case 2:
                                 // "2. View Offerings"
@@ -209,16 +204,6 @@ public class MySystem {
         return option;
     }
 
-
-    // Manage scheduling - For Instructor to select and manage their lessons
-    public void manageScheduling(Instructor instructor) {
-        Lesson selectedLesson = instructor.selectLesson(lessons, scanner);
-        if (selectedLesson != null) {
-            System.out.println("Lesson selected: " + selectedLesson.getDiscipline());
-        } else {
-            System.out.println("No available offerings selected.");
-        }
-    }
 
     public int getUserChoice(int min, int max) {
         int choice = -1;

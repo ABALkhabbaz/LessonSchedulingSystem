@@ -45,11 +45,16 @@ public class DatabaseHandler {
 
   private Connection connection;
 
+  private static boolean isConnected = false;
+
   // Establish a database connection
   public void connect() throws SQLException {
     if (connection == null || connection.isClosed()) {
       connection = DriverManager.getConnection(URL, USER, PASSWORD);
-      System.out.println("Connected to the database.");
+      if (!isConnected) {
+        System.out.println("Connected to the database.");
+        isConnected = true;
+      }
     }
   }
 
@@ -375,7 +380,7 @@ public class DatabaseHandler {
 
         Instructor instructor = null;
         if (instructorId > 0) {
-          instructor = getInstructor(instructorId); 
+          instructor = getInstructor(instructorId);
         }
 
         Schedule schedule = new Schedule(startDate, endDate, startTime, endTime, day);
@@ -434,7 +439,99 @@ public class DatabaseHandler {
     System.out.println("Lesson updated successfully!");
   }
 
+  public ArrayList<Lesson> getAvailableLessonsForInstructor() throws SQLException {
+    ArrayList<Lesson> lessons = new ArrayList<Lesson>();
+    String getLessonsSQL = """
+            SELECT *
+            FROM Lessons
+            WHERE isAvailable = true and instructorId IS NULL
+        """;
 
+    try (ResultSet rs = executeQuery(getLessonsSQL)) {
+      while (rs.next()) {
+        long instructorId = rs.getLong("instructorId");
+        Instructor instructor = null;
 
+        // Use getInstructor method if instructorId is not null
+        if (instructorId != 0) {
+          instructor = getInstructor(instructorId);
+        }
+
+        // Create a Schedule object
+        Schedule schedule = new Schedule(
+            rs.getDate("startDate"),
+            rs.getDate("endDate"),
+            rs.getTime("startTime"),
+            rs.getTime("endTime"),
+            rs.getString("day"));
+
+        // Create a Location object
+        Location location = new Location(
+            rs.getString("locationName"),
+            rs.getString("locationCity"),
+            rs.getString("locationProvince"),
+            rs.getString("locationAddress"));
+
+        // Create a Lesson object
+        Lesson lesson = new Lesson(
+            rs.getLong("lessonId"),
+            rs.getString("discipline"),
+            instructor,
+            schedule,
+            location,
+            rs.getBoolean("isPrivate"),
+            rs.getBoolean("isAvailable"));
+
+        lessons.add(lesson);
+      }
+    }
+
+    return lessons;
+  }
+
+  public Instructor insertInstructor(String name, String phone, LocalDate birthDate, String username,String password, String specialization, ArrayList<String> availableCities) {
+    
+    // Insert the new instructor into the database
+    String insertSQL = """
+            INSERT INTO Users (name, phone, birthDate, username, password, userType)
+            VALUES (?, ?, ?, ?, ?, 'instructor')
+        """;
+    
+    try {
+      executeUpdate(insertSQL, name, phone, java.sql.Date.valueOf(birthDate), username, password);
+      System.out.println("Instructor account created successfully!");
+      
+      // Retrieve the generated userId
+      String getUserSQL = "SELECT userId FROM Users WHERE username = ?";
+      try (ResultSet rs = executeQuery(getUserSQL, username)) {
+        if (rs.next()) {
+          long userId = rs.getLong("userId");
+          
+          // Insert the specialization into the Instructors table
+          String insertSpecializationSQL = """
+                  INSERT INTO Instructors (instructorId, speciality)
+                  VALUES (?, ?)
+              """;
+          executeUpdate(insertSpecializationSQL, userId, specialization);
+          
+          // Insert the available cities into the AvailableCities table
+          String insertCitiesSQL = """
+                  INSERT INTO AvailableCities (instructorId, city)
+                  VALUES (?, ?)
+              """;
+          for (String city : availableCities) {
+            executeUpdate(insertCitiesSQL, userId, city);
+          }
+          
+          return new Instructor(userId, name, phone, birthDate, username, password, specialization, availableCities);
+        }
+      }
+    } catch (SQLException e) {
+      System.err.println("Database error: " + e.getMessage());
+      return null;
+    }
+    
+    return null; // Failed to create account
+  }
 
 }

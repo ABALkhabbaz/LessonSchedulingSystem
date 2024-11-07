@@ -44,4 +44,9 @@ public class Location {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    @Override
+    public String toString() {
+        return name + " in " + city + ", " + province + " at " + address;
+    }
 }

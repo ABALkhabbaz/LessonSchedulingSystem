@@ -1,33 +1,50 @@
 package Actors;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import MySystem.MySystem;
+
+import DAO.DatabaseHandler;
 import Offerings.Lesson;
 
 public class Instructor extends User {
     private List<String> availableCities;
     private String specialization;
 
-    public Instructor(long userId, String name, String phone, LocalDate birthDate, String username, String password, String specialization, ArrayList<String> availableCities) {
+    public Instructor(long userId, String name, String phone, LocalDate birthDate, String username, String password,
+            String specialization, ArrayList<String> availableCities) {
         super(userId, name, phone, birthDate, username, password);
         this.availableCities = availableCities;
         this.specialization = specialization;
     }
 
-    public Lesson selectLesson(ArrayList<Lesson> lessons, Scanner scan) {
-        System.out.println("Select an offering:");
-        for (int i = 0; i < lessons.size(); i++) {
-            System.out.println(i + 1 + ". " + lessons.get(i).getDiscipline());
+    public Lesson selectLesson(DatabaseHandler dbHandler, Scanner scan) {
+
+        ArrayList<Lesson> lessons = null;
+        Lesson lesson = null;
+        try {
+            lessons = dbHandler.getAvailableLessonsForInstructor();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        int choice = scan.nextInt();
-        if (choice > 0 && choice <= lessons.size()) {
-            return lessons.get(choice - 1);
-        } else {
-            System.out.println("Invalid choice.");
+
+        if(lessons == null || lessons.isEmpty()) {
+            System.out.println("No lessons available.");
             return null;
         }
+
+        System.out.println("Select an offering:");
+        for (int i = 0; i < lessons.size(); i++) {
+            System.out.println(i + 1 + ". " + lessons.get(i).toString());
+        }
+        int choice = new MySystem().getUserChoice(1, lessons.size());
+        lesson = lessons.get(choice - 1);
+
+        lesson.setInstructor(this);
+        return lesson;
     }
 
     public List<String> getAvailableCities() {

@@ -3,6 +3,7 @@ package Offerings;
 import LocationAndSchedule.Location;
 import LocationAndSchedule.Schedule;
 import Actors.Instructor;
+
 public class Lesson {
     private long lessonId;
     private String discipline;
@@ -12,14 +13,15 @@ public class Lesson {
     private boolean isPrivate;
     private boolean isAvailable;
 
-    public Lesson(long lessonId, String discipline, Instructor instructor, Schedule schedule, Location location, boolean isPrivate, boolean isAvailable) {
+    public Lesson(long lessonId, String discipline, Instructor instructor, Schedule schedule, Location location,
+            boolean isPrivate, boolean isAvailable) {
         this.lessonId = lessonId;
         this.discipline = discipline;
         this.instructor = instructor;
         this.schedule = schedule;
         this.location = location;
         this.isPrivate = isPrivate;
-        this.isAvailable = isAvailable; 
+        this.isAvailable = isAvailable;
     }
 
     public long getLessonId() {
@@ -93,6 +95,9 @@ public class Lesson {
 
     @Override
     public String toString() {
-        return "Lesson [LessonId=" + lessonId + "Discipline=" + discipline + ", Instructor=" + (instructor != null ? instructor.getName() : "N/A") + "]";
+        return "Lesson [LessonId=" + lessonId + ", Discipline=" + discipline + ", Instructor="
+                + (instructor != null ? instructor.getName() : "N/A") +
+                ", \nSchedule=" + (schedule != null ? schedule.toString() : "N/A") + ", \nLocation="
+                + (location != null ? location.toString() : "N/A") + ", Private=" + (isPrivate ? "Yes" : "No") + "]";
     }
 }
