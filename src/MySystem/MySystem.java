@@ -49,13 +49,17 @@ public class MySystem {
                 System.out.println("Login successful. Welcome, " + user.getName() + "!"); // We can choose between name
                                                                                           // and username
                 boolean userSession = true;
+                
+                Admin admin = null;
+                Instructor instructor = null;
+                Client client = null;
 
                 if (user instanceof Admin)
-                    user = (Admin) user;
+                    admin = (Admin) user;
                 else if (user instanceof Instructor)
-                    user = (Instructor) user;
+                    instructor = (Instructor) user;
                 else if (user instanceof Client)
-                    user = (Client) user;
+                    client = (Client) user;
                 else {
                     System.out.println("Invalid user type. Please try again.");
                     close(-1);
@@ -65,11 +69,10 @@ public class MySystem {
                     int option = displayMenuOption(user);
 
                     if (user instanceof Admin) {
-                        Admin admin = (Admin) user;
                         switch (option) {
                             case 1:
                                 // "1. Create Offering"
-                                processOfferings((Admin) user);
+                                admin.addLesson(dbHandler, scanner);
                                 break;
                             case 2:
                                 // "2. View Offerings"
@@ -201,16 +204,6 @@ public class MySystem {
         return option;
     }
 
-    // Process offerings - handles offering creation and management by Admin
-    public void processOfferings(Admin admin) {
-        Lesson lesson = admin.addLesson(lessons, scanner);
-        if (lesson != null) {
-            lessons.add(lesson);
-            System.out.println("Offering added successfully.");
-        } else {
-            System.out.println("Failed to add offering.");
-        }
-    }
 
     // Manage scheduling - For Instructor to select and manage their lessons
     public void manageScheduling(Instructor instructor) {
