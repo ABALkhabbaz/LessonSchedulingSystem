@@ -98,7 +98,6 @@ public class MySystem {
                         switch (option) {
                             case 1:
                                 // "1. Select Offering"
-                                
                                 manageScheduling((Instructor) user);
                                 break;
                             case 2:
