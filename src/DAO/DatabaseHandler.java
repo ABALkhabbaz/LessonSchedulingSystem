@@ -550,7 +550,7 @@ public class DatabaseHandler {
         """;
 
     try {
-      executeUpdate(updateLessonSQL, instructor.getUserId(), lesson.getLessonId());
+      executeUpdate(updateLessonSQL, instructor.getInstructorId(), lesson.getLessonId());
     } catch (SQLException e) {
       e.printStackTrace();
     }

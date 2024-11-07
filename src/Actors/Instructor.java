@@ -64,6 +64,10 @@ public class Instructor extends User {
         this.specialization = specialization;
     }
 
+    public long getInstructorId() {
+        return getUserId();
+    }
+    
     @Override
     public void displayRole() {
         System.out.println("Instructor: " + getName());
