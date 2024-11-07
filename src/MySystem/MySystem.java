@@ -14,7 +14,7 @@ import Offerings.Lesson;
 public class MySystem {
     private ArrayList<Lesson> lessons;
     private LoginSystem loginSystem;
-    private ArrayList<User> users; 
+    private ArrayList<User> users;
     private Scanner scanner;
     private DatabaseHandler dbHandler;
 
@@ -32,7 +32,7 @@ public class MySystem {
         loginSystem = new LoginSystem();
         users = new ArrayList<User>();
         scanner = new Scanner(System.in);
-        
+
     }
 
     // Run the system - Main loop
@@ -46,35 +46,48 @@ public class MySystem {
 
             if (user != null) {
                 // User is logged in
-                System.out.println("Login successful. Welcome, " + user.getName() + "!"); // We can choose between name and username
+                System.out.println("Login successful. Welcome, " + user.getName() + "!"); // We can choose between name
+                                                                                          // and username
                 boolean userSession = true;
+
+                if (user instanceof Admin)
+                    user = (Admin) user;
+                else if (user instanceof Instructor)
+                    user = (Instructor) user;
+                else if (user instanceof Client)
+                    user = (Client) user;
+                else {
+                    System.out.println("Invalid user type. Please try again.");
+                    close(-1);
+                }
 
                 while (userSession) {
                     int option = displayMenuOption(user);
-                    
-                    if (user instanceof Admin){
+
+                    if (user instanceof Admin) {
+                        Admin admin = (Admin) user;
                         switch (option) {
                             case 1:
-                            // "1. Create Offering"
+                                // "1. Create Offering"
                                 processOfferings((Admin) user);
                                 break;
                             case 2:
-                            // "2. View Offerings"
-                                Person.displayAvailableLessons(dbHandler);
+                                // "2. View Offerings"
+                                admin.displayAllLessons(dbHandler);
                                 break;
                             case 3:
-                            // "3. Logout"
+                                // "3. Logout"
                                 System.out.println("Logging out...");
                                 userSession = false;
                                 break;
                             case 4:
-                            // "4. Exit Program"
+                                // "4. Exit Program"
                                 close(0);
                                 break;
                             default:
                                 break;
                         }
-                    } else if (user instanceof Instructor){
+                    } else if (user instanceof Instructor) {
                         switch (option) {
                             case 1:
                                 // "1. Select Offering"
@@ -96,7 +109,7 @@ public class MySystem {
                             default:
                                 break;
                         }
-                    } else if (user instanceof Client){
+                    } else if (user instanceof Client) {
                         switch (option) {
                             case 1:
                                 // "1. Browse Offerings"
@@ -129,7 +142,7 @@ public class MySystem {
                 System.out.println("1. Display Available Lessons");
                 System.out.println("2. Main menu");
                 System.out.println("3. Exit program");
-                int option = getUserChoice(1,3);
+                int option = getUserChoice(1, 3);
 
                 switch (option) {
                     case 1:
@@ -208,8 +221,6 @@ public class MySystem {
             System.out.println("No available offerings selected.");
         }
     }
-
-    
 
     public int getUserChoice(int min, int max) {
         int choice = -1;

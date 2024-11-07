@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import Offerings.Lesson;
 
-public class User extends Person {
+public abstract class User extends Person {
     
     private long userId;
     private String name;

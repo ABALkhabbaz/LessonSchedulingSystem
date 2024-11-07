@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.Scanner;
 
+import DAO.DatabaseHandler;
+
 public class Admin extends User {
 
     public Admin(long userId, String name, String phone, LocalDate birthDate, String username, String password) {
@@ -18,7 +20,7 @@ public class Admin extends User {
     }
 
     // Method to add a new lesson (renamed from addOffering)
-    public Lesson addLesson(ArrayList<Lesson> lessons, Scanner scan) {
+    public Lesson addLesson(DatabaseHandler dbHandler, Scanner scan) {
         System.out.println("====================================");
         System.out.println("Adding a New Lesson");
 
@@ -102,8 +104,13 @@ public class Admin extends User {
         Lesson newLesson = new Lesson(lessonId, discipline, instructor, schedule, location, isPrivate, true);
 
         // Add the new offering to the list
-        lessons.add(newLesson);
-    
+        // lessons.add(newLesson); // Removed
+        try {
+            dbHandler.insertLesson(newLesson);
+        } catch (Exception e) {
+            System.err.println("Failed to add new lesson. Please try again.");
+            return null;
+        }
         System.out.println("New lesson added successfully!");
         System.out.println(newLesson);
         System.out.println("====================================");
@@ -111,6 +118,30 @@ public class Admin extends User {
         return newLesson;
     }
 
+    // Method to get all lessons
+    public ArrayList<Lesson> getLessons(DatabaseHandler dbHandler) {
+        ArrayList<Lesson> lessons = new ArrayList<Lesson>();
+        try {
+            lessons = dbHandler.getAllLessons(this);
+        } catch (Exception e) {
+            System.err.println("Failed to retrieve lessons. Please try again.");
+        }
+        return lessons;
+    }
+    
+    // Display allLessons
+    public void displayAllLessons(DatabaseHandler dbHandler) {
+
+        ArrayList<Lesson> lessons = getLessons(dbHandler);
+        
+        System.out.println("====================================");
+        System.out.println("All Lessons");
+        for (Lesson lesson : lessons) {
+            System.out.println(lesson);
+        }
+        System.out.println("====================================");
+    }
+    
     // Helper method to parse date from string
     private Date parseDate(String dateStr) {
         try {

@@ -9,9 +9,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
+import Actors.Person;
 import Actors.Admin;
 import Actors.Client;
 import Actors.Instructor;
@@ -216,49 +219,46 @@ public class DatabaseHandler {
         """;
 
     try (ResultSet rs = executeQuery(getLessonsSQL)) {
-        while (rs.next()) {
-            long instructorId = rs.getLong("instructorId");
-            Instructor instructor = null;
+      while (rs.next()) {
+        long instructorId = rs.getLong("instructorId");
+        Instructor instructor = null;
 
-            // Use getInstructor method if instructorId is not null
-            if (instructorId != 0) {
-                instructor = getInstructor(instructorId);
-            }
-
-            // Create a Schedule object
-            Schedule schedule = new Schedule(
-                rs.getDate("startDate"),
-                rs.getDate("endDate"),
-                rs.getTime("startTime"),
-                rs.getTime("endTime"),
-                rs.getString("day")
-            );
-
-            // Create a Location object
-            Location location = new Location(
-                rs.getString("locationName"),
-                rs.getString("locationCity"),
-                rs.getString("locationProvince"),
-                rs.getString("locationAddress")
-            );
-
-            // Create a Lesson object
-            Lesson lesson = new Lesson(
-                rs.getLong("lessonId"),
-                rs.getString("discipline"),
-                instructor,
-                schedule,
-                location,
-                rs.getBoolean("isPrivate"),
-                rs.getBoolean("isAvailable")
-            );
-
-            lessons.add(lesson);
+        // Use getInstructor method if instructorId is not null
+        if (instructorId != 0) {
+          instructor = getInstructor(instructorId);
         }
+
+        // Create a Schedule object
+        Schedule schedule = new Schedule(
+            rs.getDate("startDate"),
+            rs.getDate("endDate"),
+            rs.getTime("startTime"),
+            rs.getTime("endTime"),
+            rs.getString("day"));
+
+        // Create a Location object
+        Location location = new Location(
+            rs.getString("locationName"),
+            rs.getString("locationCity"),
+            rs.getString("locationProvince"),
+            rs.getString("locationAddress"));
+
+        // Create a Lesson object
+        Lesson lesson = new Lesson(
+            rs.getLong("lessonId"),
+            rs.getString("discipline"),
+            instructor,
+            schedule,
+            location,
+            rs.getBoolean("isPrivate"),
+            rs.getBoolean("isAvailable"));
+
+        lessons.add(lesson);
+      }
     }
 
     return lessons;
-}
+  }
 
   public Instructor getInstructor(long instructorId) throws SQLException {
     String instructorQuery = """
@@ -303,4 +303,92 @@ public class DatabaseHandler {
     return foundInstructor;
   }
 
+  public void insertLesson(Lesson lesson) {
+    String insertLessonSQL = """
+            INSERT INTO Lessons (
+                discipline,
+                instructorId,
+                isPrivate,
+                isAvailable,
+                startDate,
+                endDate,
+                startTime,
+                endTime,
+                day,
+                locationName,
+                locationCity,
+                locationProvince,
+                locationAddress
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """;
+
+    // Prepare statement and bind values
+    try {
+      executeUpdate(insertLessonSQL,
+          lesson.getDiscipline(),
+          lesson.getInstructor(),
+          lesson.isPrivate(),
+          lesson.isAvailable(),
+          lesson.getSchedule().getStartDate(),
+          lesson.getSchedule().getEndDate(),
+          lesson.getSchedule().getStartTime(),
+          lesson.getSchedule().getEndTime(),
+          lesson.getSchedule().getDay(),
+          lesson.getLocation().getName(),
+          lesson.getLocation().getCity(),
+          lesson.getLocation().getProvince(),
+          lesson.getLocation().getAddress());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    System.out.println("Lesson inserted into the database successfully!");
+  }
+
+  public ArrayList<Lesson> getAllLessons(Person p) {
+    // Check if the person is an Admin
+    if (!(p instanceof Admin)) {
+      System.out.println("You are not authorized to view all lessons");
+      return null;
+    }
+
+    ArrayList<Lesson> lessons = new ArrayList<>();
+    String query = "SELECT * FROM Lessons";
+
+    try {
+      ResultSet resultSet = executeQuery(query);
+      while (resultSet.next()) {
+        long lessonId = resultSet.getLong("lessonId");
+        String discipline = resultSet.getString("discipline");
+        long instructorId = resultSet.getLong("instructorId");
+        boolean isPrivate = resultSet.getBoolean("isPrivate");
+        boolean isAvailable = resultSet.getBoolean("isAvailable");
+        Date startDate = resultSet.getDate("startDate");
+        Date endDate = resultSet.getDate("endDate");
+        Time startTime = resultSet.getTime("startTime");
+        Time endTime = resultSet.getTime("endTime");
+        String day = resultSet.getString("day");
+        String locationName = resultSet.getString("locationName");
+        String locationCity = resultSet.getString("locationCity");
+        String locationProvince = resultSet.getString("locationProvince");
+        String locationAddress = resultSet.getString("locationAddress");
+
+        Instructor instructor = null;
+        if (instructorId > 0) {
+          instructor = getInstructor(instructorId); 
+        }
+
+        Schedule schedule = new Schedule(startDate, endDate, startTime, endTime, day);
+        Location location = new Location(locationName, locationCity, locationProvince, locationAddress);
+        Lesson lesson = new Lesson(lessonId, discipline, instructor, schedule, location, isPrivate, isAvailable);
+
+        lessons.add(lesson);
+      }
+      System.out.println("Lessons retrieved successfully.");
+    } catch (SQLException e) {
+      System.err.println("Error retrieving lessons: " + e.getMessage());
+    }
+
+    return lessons;
+  }
 }
