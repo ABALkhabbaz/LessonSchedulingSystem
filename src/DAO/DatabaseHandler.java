@@ -606,7 +606,18 @@ public class DatabaseHandler {
     return lessons;
   }
 
-  public Booking insertNewBooking(Lesson lesson, Client client) {
+  public Booking insertNewBooking(Lesson lesson, User user) {
+
+    if(lesson == null || user == null) {
+      System.out.println("Invalid lesson or client.");
+      return null;
+    }
+
+    if(!(user instanceof Client)) {
+      System.out.println("Only clients can book lessons.");
+      return null;
+    }
+
     // Insert the new booking into the database
     String insertSQL = """
             INSERT INTO Bookings (lessonId, clientId)
@@ -614,15 +625,15 @@ public class DatabaseHandler {
         """;
 
     try {
-      executeUpdate(insertSQL, lesson.getLessonId(), client.getUserId());
+      executeUpdate(insertSQL, lesson.getLessonId(), user.getUserId());
       System.out.println("Booking created successfully!");
 
       // Retrieve the generated bookingId
       String getBookingSQL = "SELECT bookingId FROM Bookings WHERE lessonId = ? AND clientId = ?";
-      try (ResultSet rs = executeQuery(getBookingSQL, lesson.getLessonId(), client.getUserId())) {
+      try (ResultSet rs = executeQuery(getBookingSQL, lesson.getLessonId(), user.getUserId())) {
         if (rs.next()) {
           long bookingId = rs.getLong("bookingId");
-          return new Booking(bookingId, lesson, client);
+          return new Booking(bookingId, lesson, (Client) user);
         }
       }
     } catch (SQLException e) {
