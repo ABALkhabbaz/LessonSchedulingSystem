@@ -3,6 +3,8 @@ package Actors;
 import LocationAndSchedule.Location;
 import LocationAndSchedule.Schedule;
 import Offerings.Lesson;
+
+import java.sql.SQLException;
 import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -103,8 +105,19 @@ public class Admin extends User {
         long lessonId = 0; // Use lessonId = 0 for now
         Lesson newLesson = new Lesson(lessonId, discipline, instructor, schedule, location, isPrivate, true);
 
-        // Add the new offering to the list
-        // lessons.add(newLesson); // Removed
+        // Check if schedule overlaps with existing lessons
+        boolean hasOverlap = false;
+        try {
+            hasOverlap = dbHandler.hasLessonOverlap(newLesson);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if(hasOverlap) {
+            System.err.println("Lesson schedule overlaps with existing lesson. Please try again.");
+            return null;
+        }
+        
         try {
             dbHandler.insertLesson(newLesson);
         } catch (Exception e) {

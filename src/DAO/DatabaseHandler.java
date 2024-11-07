@@ -496,31 +496,32 @@ public class DatabaseHandler {
     return lessons;
   }
 
-  public Instructor insertInstructor(String name, String phone, LocalDate birthDate, String username,String password, String specialization, ArrayList<String> availableCities) {
-    
+  public Instructor insertInstructor(String name, String phone, LocalDate birthDate, String username, String password,
+      String specialization, ArrayList<String> availableCities) {
+
     // Insert the new instructor into the database
     String insertSQL = """
             INSERT INTO Users (name, phone, birthDate, username, password, userType)
             VALUES (?, ?, ?, ?, ?, 'instructor')
         """;
-    
+
     try {
       executeUpdate(insertSQL, name, phone, java.sql.Date.valueOf(birthDate), username, password);
       System.out.println("Instructor account created successfully!");
-      
+
       // Retrieve the generated userId
       String getUserSQL = "SELECT userId FROM Users WHERE username = ?";
       try (ResultSet rs = executeQuery(getUserSQL, username)) {
         if (rs.next()) {
           long userId = rs.getLong("userId");
-          
+
           // Insert the specialization into the Instructors table
           String insertSpecializationSQL = """
                   INSERT INTO Instructors (instructorId, speciality)
                   VALUES (?, ?)
               """;
           executeUpdate(insertSpecializationSQL, userId, specialization);
-          
+
           // Insert the available cities into the AvailableCities table
           String insertCitiesSQL = """
                   INSERT INTO AvailableCities (instructorId, city)
@@ -529,7 +530,7 @@ public class DatabaseHandler {
           for (String city : availableCities) {
             executeUpdate(insertCitiesSQL, userId, city);
           }
-          
+
           return new Instructor(userId, name, phone, birthDate, username, password, specialization, availableCities);
         }
       }
@@ -537,7 +538,7 @@ public class DatabaseHandler {
       System.err.println("Database error: " + e.getMessage());
       return null;
     }
-    
+
     return null; // Failed to create account
   }
 
@@ -608,12 +609,12 @@ public class DatabaseHandler {
 
   public Booking insertNewBooking(Lesson lesson, User user) {
 
-    if(lesson == null || user == null) {
+    if (lesson == null || user == null) {
       System.out.println("Invalid lesson or client.");
       return null;
     }
 
-    if(!(user instanceof Client)) {
+    if (!(user instanceof Client)) {
       System.out.println("Only clients can book lessons.");
       return null;
     }
@@ -661,5 +662,39 @@ public class DatabaseHandler {
     System.out.println("Lesson availability updated successfully!");
   }
 
+  public boolean hasLessonOverlap(Lesson lesson) throws SQLException {
+    String overlapCheckSQL = """
+            SELECT COUNT(*) AS overlapCount
+            FROM Lessons
+            WHERE day = ?
+              AND locationName = ?
+              AND locationCity = ?
+              AND locationProvince = ?
+              AND locationAddress = ?
+              AND ((startTime < ? AND endTime > ?) OR (startTime < ? AND endTime > ?))
+              AND ((startDate <= ? AND endDate >= ?) OR (startDate >= ? AND endDate <= ?));
+        """;
+
+    ResultSet resultSet = executeQuery(overlapCheckSQL,
+        lesson.getSchedule().getDay(),
+        lesson.getLocation().getName(),
+        lesson.getLocation().getCity(),
+        lesson.getLocation().getProvince(),
+        lesson.getLocation().getAddress(),
+        lesson.getSchedule().getEndTime(),
+        lesson.getSchedule().getStartTime(),
+        lesson.getSchedule().getStartTime(),
+        lesson.getSchedule().getEndTime(),
+        lesson.getSchedule().getEndDate(),
+        lesson.getSchedule().getStartDate(),
+        lesson.getSchedule().getStartDate(),
+        lesson.getSchedule().getEndDate());
+
+    if (resultSet.next() && resultSet.getInt("overlapCount") > 0) {
+      return true;
+    }
+
+    return false;
+  }
 
 }

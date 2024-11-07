@@ -14,7 +14,7 @@ public class Lesson {
     private boolean isAvailable;
 
     public Lesson(long lessonId, String discipline, Instructor instructor, Schedule schedule, Location location,
-            boolean isPrivate, boolean isAvailable) {
+        boolean isPrivate, boolean isAvailable) {
         this.lessonId = lessonId;
         this.discipline = discipline;
         this.instructor = instructor;
