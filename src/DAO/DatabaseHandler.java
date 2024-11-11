@@ -489,7 +489,7 @@ public class DatabaseHandler {
             rs.getBoolean("isPrivate"),
             rs.getBoolean("isAvailable"));
 
-        lessons.add(lesson);
+        if(instructor.getAvailableCities().contains(location.getCity())) lessons.add(lesson); // Return only lessons in available cities
       }
     }
 
