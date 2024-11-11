@@ -41,4 +41,9 @@ public class Booking {
     public void confirmBooking() {
         System.out.println("Booking confirmed for client: " + client.getName() + "for lesson: " + lesson.getDiscipline());
     }
+
+    @Override
+    public String toString() {
+        return "Booking ID: " + bookingId + " -- Lesson: " + lesson.getDiscipline();
+    }
 }
