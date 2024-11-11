@@ -67,6 +67,10 @@ public abstract class User extends Person {
         this.password = password;
     }
 
+    public int getAge() {
+        return LocalDate.now().getYear() - birthDate.getYear();
+    }
+
     /**
      * Displays the available offerings to the user.
      * @param offerings List of available offerings in the system.
