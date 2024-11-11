@@ -98,6 +98,6 @@ public class Lesson {
         return "Lesson [LessonId=" + lessonId + ", Discipline=" + discipline + ", Instructor="
                 + (instructor != null ? instructor.getName() : "N/A") +
                 ", \nSchedule=" + (schedule != null ? schedule.toString() : "N/A") + ", \nLocation="
-                + (location != null ? location.toString() : "N/A") + ", Private=" + (isPrivate ? "Yes" : "No") + "]";
+                + (location != null ? location.toString() : "N/A") + ", Private=" + (isPrivate ? "Yes" : "No") + ", isAvailable=" + (isAvailable ? "Yes" : "No") + "]";
     }
 }

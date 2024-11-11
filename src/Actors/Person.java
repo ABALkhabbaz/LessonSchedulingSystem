@@ -28,7 +28,7 @@ public class Person {
             int i = 1;
             for (Lesson lesson : lessons) {
                 if(lesson.getInstructor() == null) continue; // Only display lessons with assigned instructors to public 
-                System.out.println(i++ + ". " + lesson.getDiscipline() + " by " + lesson.getInstructor().getName());
+                System.out.println(i++ + ". " + lesson.toString());
             }
         }
     }

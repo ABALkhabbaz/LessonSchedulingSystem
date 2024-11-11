@@ -116,30 +116,63 @@ public class MySystem {
                                 break;
                         }
                     } else if (user instanceof Client) {
-                        switch (option) {
-                            case 1:
-                                // "1. Browse Offerings"
-                                Person.displayAvailableLessons(dbHandler);
-                                break;
-                            case 2:
-                                // "2. Enroll in Lesson"
-                                client.enrollInLesson(dbHandler, scanner);
-                                break;
-                            case 3:
-                                // "3. Unenroll From a lesson"
-                                client.unenrollFromLesson(dbHandler, scanner);
-                                break;
-                            case 4:
-                                // "4. Logout"
-                                System.out.println("Logging out...");
-                                userSession = false;
-                                break;
-                            case 5:
-                                // "5. Exit Program"
-                                close(0);
-                                break;
-                            default:
-                                break;
+                        if(user.getAge() < 18) { // Underage menu
+                            switch (option) {
+                                case 1:
+                                    // "1. Browse Offerings"
+                                    Person.displayAvailableLessons(dbHandler);
+                                    break;
+                                case 2:
+                                    // "2. Enroll in Lesson"
+                                    client.enrollInLesson(dbHandler, scanner, false);
+                                    break;
+                                case 3:
+                                    // "3. Unenroll From a lesson"
+                                    client.unenrollFromLesson(dbHandler, scanner);
+                                    break;
+                                case 4:
+                                    // "4. Logout"
+                                    System.out.println("Logging out...");
+                                    userSession = false;
+                                    break;
+                                case 5:
+                                    // "5. Exit Program"
+                                    close(0);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        } else { // of age
+                            switch (option) {
+                                case 1:
+                                    // "1. Browse Offerings"
+                                    Person.displayAvailableLessons(dbHandler);
+                                    break;
+                                case 2:
+                                    // "2. Enroll in Lesson"
+                                    client.enrollInLesson(dbHandler, scanner, false);
+                                    break;
+                                case 3:
+                                    // "3. Unenroll From a lesson"
+                                    client.unenrollFromLesson(dbHandler, scanner);
+                                    break;
+                                case 4:
+                                    // "4. Enroll for a minor"
+                                    client.enrollForMinor(dbHandler, scanner);
+                                    break;
+                                case 5:
+                                    // "5. Logout"
+                                    System.out.println("Logging out...");
+                                    userSession = false;
+                                    break;
+                                case 6:
+                                    // "6. Exit Program"
+                                    close(0);
+                                    break;
+                                default:
+                                    break;
+                            }
+
                         }
                     } else {
                         System.out.println("Invalid option. Please try again.");
@@ -203,13 +236,24 @@ public class MySystem {
             System.out.println("5. Exit Program");
             option = getUserChoice(1, 5);
         } else if (user instanceof Client) {
-            System.out.println("Client Options:");
-            System.out.println("1. Browse Offerings");
-            System.out.println("2. Enroll in Lesson");
-            System.out.println("3. Unenroll From a lesson");
-            System.out.println("4. Logout");
-            System.out.println("5. Exit Program");
-            option = getUserChoice(1, 5);
+            if(user.getAge() < 18) {
+                System.out.println("Client Options:");
+                System.out.println("1. Browse Offerings");
+                System.out.println("2. Enroll in Lesson");
+                System.out.println("3. Unenroll From a lesson");
+                System.out.println("4. Logout");
+                System.out.println("5. Exit Program");
+                option = getUserChoice(1, 5);
+            } else {
+                System.out.println("Client Options:");
+                System.out.println("1. Browse Offerings");
+                System.out.println("2. Enroll in Lesson");
+                System.out.println("3. Unenroll From a lesson");
+                System.out.println("4. Enroll for a minor");
+                System.out.println("5. Logout");
+                System.out.println("6. Exit Program");
+                option = getUserChoice(1, 6);
+            }
         }
         return option;
     }
