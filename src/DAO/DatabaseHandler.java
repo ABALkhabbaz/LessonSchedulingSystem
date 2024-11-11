@@ -639,6 +639,7 @@ public class DatabaseHandler {
             updateLessonAvailability(lesson, false);
             lesson.setAvailable(false);
           }
+          
           return new Booking(bookingId, lesson, (Client) user);
         }
       }
