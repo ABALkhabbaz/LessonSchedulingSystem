@@ -77,12 +77,16 @@ public class MySystem {
                                 admin.updateLesson(dbHandler, scanner);
                                 break;
                             case 4:
-                                // "4. Logout"
+                                // "4. Delete Client Account"
+                                admin.deleteAccount(dbHandler, scanner);
+                                break;
+                            case 5:
+                                // "5. Logout"
                                 System.out.println("Logging out...");
                                 userSession = false;
                                 break;
-                            case 5:
-                                // "5. Exit Program"
+                            case 6:
+                                // "6. Exit Program"
                                 close(0);
                                 break;
                             default:
@@ -224,9 +228,10 @@ public class MySystem {
             System.out.println("1. Create Offering");
             System.out.println("2. View Offerings");
             System.out.println("3. Update Offering");
-            System.out.println("4. Logout");
-            System.err.println("5. Exit Program");
-            option = getUserChoice(1, 5);
+            System.out.println("4. Delete User Account");
+            System.out.println("5. Logout");
+            System.err.println("6. Exit Program");
+            option = getUserChoice(1, 6);
         } else if (user instanceof Instructor) {
             System.out.println("Instructor Options:");
             System.out.println("1. Select Offering");

@@ -89,4 +89,10 @@ public abstract class User extends Person {
     public void displayRole() {
         System.out.println("Role: User");
     }
+
+    @Override
+    public String toString() {
+        return "User [userId=" + userId + ", name=" + name + ", phone=" + phone + ", birthDate=" + birthDate
+                + ", username=" + username + ", password=" + password + "]";
+    }
 }

@@ -853,4 +853,53 @@ public class DatabaseHandler {
 
     return false;
   }
+
+  // Returns all non admin users
+  public ArrayList<User> getAllUsers() {
+    ArrayList<User> users = new ArrayList<User>();
+    String query = "SELECT * FROM Users WHERE userType != 'admin'";
+
+    try {
+      ResultSet resultSet = executeQuery(query);
+      while (resultSet.next()) {
+        long userId = resultSet.getLong("userId");
+        String name = resultSet.getString("name");
+        String phone = resultSet.getString("phone");
+        LocalDate birthDate = resultSet.getDate("birthDate").toLocalDate();
+        String username = resultSet.getString("username");
+        String password = resultSet.getString("password");
+        String userType = resultSet.getString("userType");
+
+        if ("instructor".equalsIgnoreCase(userType)) {
+          // Query to fetch specialization and cities for an instructor
+          Instructor instructor = getInstructor(userId);
+          users.add(instructor);
+        } else if ("client".equalsIgnoreCase(userType)) {
+          users.add(new Client(userId, name, phone, birthDate, username, password));
+        } else {
+          System.err.println("Invalid user type: " + userType);
+        }
+      }
+    } catch (SQLException e) {
+      System.err.println("Error retrieving users: " + e.getMessage());
+    }
+
+    return users;
+  }
+
+  public void deleteUser(User user) {
+    
+    String deleteSQL = """
+            DELETE FROM Users
+            WHERE userId = ?
+        """;
+
+    try {
+      executeUpdate(deleteSQL, user.getUserId());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    System.out.println("User deleted successfully!");
+  }
 }

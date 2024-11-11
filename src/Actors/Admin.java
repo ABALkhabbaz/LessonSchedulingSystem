@@ -317,4 +317,47 @@ public class Admin extends User {
             return null;
         }
     }
+
+    public void deleteAccount(DatabaseHandler dbHandler, Scanner scanner) {
+        
+        System.out.println("====================================");
+        System.out.println("Deleting Account");
+
+        ArrayList<User> users = new ArrayList<User>();
+        try {
+            users = dbHandler.getAllUsers();
+        } catch (Exception e) {
+            System.err.println("Failed to retrieve users. Please try again.");
+        }
+
+        // Display all users
+        System.out.println("Select a user to delete:");
+        for (int i = 0; i < users.size(); i++) {
+            System.out.println((i + 1) + ". " + users.get(i).toString());
+        }
+
+        // Get the user index to delete
+        int userIndex = -1;
+        while (userIndex < 0 || userIndex >= users.size()) {
+            System.out.print("Enter user number: ");
+            userIndex = scanner.nextInt() - 1;
+            scanner.nextLine(); // Consume newline character
+            if (userIndex < 0 || userIndex >= users.size()) {
+                System.err.println("Invalid user number. Please try again.");
+            }
+        }
+
+        // Get the user to delete
+        User user = users.get(userIndex);
+
+        // Delete the user
+        try {
+            dbHandler.deleteUser(user);
+        } catch (Exception e) {
+            System.err.println("Failed to delete user. Please try again.");
+            return;
+        }
+
+        System.out.println("User deleted successfully!");
+    }
 }
