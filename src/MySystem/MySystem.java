@@ -126,12 +126,16 @@ public class MySystem {
                                 client.enrollInLesson(dbHandler, scanner);
                                 break;
                             case 3:
-                                // "3. Logout"
+                                // "3. Unenroll From a lesson"
+                                client.unenrollFromLesson(dbHandler, scanner);
+                                break;
+                            case 4:
+                                // "4. Logout"
                                 System.out.println("Logging out...");
                                 userSession = false;
                                 break;
-                            case 4:
-                                // "4. Exit Program"
+                            case 5:
+                                // "5. Exit Program"
                                 close(0);
                                 break;
                             default:
@@ -202,9 +206,10 @@ public class MySystem {
             System.out.println("Client Options:");
             System.out.println("1. Browse Offerings");
             System.out.println("2. Enroll in Lesson");
-            System.out.println("3. Logout");
-            System.out.println("4. Exit Program");
-            option = getUserChoice(1, 4);
+            System.out.println("3. Unenroll From a lesson");
+            System.out.println("4. Logout");
+            System.out.println("5. Exit Program");
+            option = getUserChoice(1, 5);
         }
         return option;
     }

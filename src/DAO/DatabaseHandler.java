@@ -741,4 +741,68 @@ public class DatabaseHandler {
     return lessons;
   }
 
+  public ArrayList<Booking> getBookingsByClient(Client client) {
+
+    String getBookingsSQL = """
+            SELECT b.bookingId, b.lessonId, l.discipline, l.instructorId, l.isPrivate, l.isAvailable,
+                   l.startDate, l.endDate, l.startTime, l.endTime, l.day,
+                   l.locationName, l.locationCity, l.locationProvince, l.locationAddress
+            FROM Bookings b
+            JOIN Lessons l ON b.lessonId = l.lessonId
+            WHERE b.clientId = ?
+        """; // Query to fetch bookings by client
+
+    ArrayList<Booking> bookings = new ArrayList<Booking>();
+
+    try (ResultSet rs = executeQuery(getBookingsSQL, client.getUserId())) {
+      while (rs.next()) {
+        long lessonId = rs.getLong("lessonId");
+        String discipline = rs.getString("discipline");
+        long instructorId = rs.getLong("instructorId");
+        boolean isPrivate = rs.getBoolean("isPrivate");
+        boolean isAvailable = rs.getBoolean("isAvailable");
+        Date startDate = rs.getDate("startDate");
+        Date endDate = rs.getDate("endDate");
+        Time startTime = rs.getTime("startTime");
+        Time endTime = rs.getTime("endTime");
+        String day = rs.getString("day");
+        String locationName = rs.getString("locationName");
+        String locationCity = rs.getString("locationCity");
+        String locationProvince = rs.getString("locationProvince");
+        String locationAddress = rs.getString("locationAddress");
+
+        Instructor instructor = null;
+        if (instructorId > 0) {
+          instructor = getInstructor(instructorId);
+        }
+
+        Schedule schedule = new Schedule(startDate, endDate, startTime, endTime, day);
+        Location location = new Location(locationName, locationCity, locationProvince, locationAddress);
+        Lesson lesson = new Lesson(lessonId, discipline, instructor, schedule, location, isPrivate, isAvailable);
+
+        Booking booking = new Booking(rs.getLong("bookingId"), lesson, client);
+        bookings.add(booking);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return bookings;
+  }
+
+  public void deleteBooking(Booking booking) {
+    String deleteBookingSQL = """
+            DELETE FROM Bookings
+            WHERE bookingId = ?
+        """;
+
+    try {
+      executeUpdate(deleteBookingSQL, booking.getBookingId());
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    System.out.println("Booking deleted successfully!");
+  }
+
 }
