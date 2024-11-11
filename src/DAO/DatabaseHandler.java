@@ -902,4 +902,20 @@ public class DatabaseHandler {
 
     System.out.println("User deleted successfully!");
   }
+
+  public void insertAccompaniedBy(Client client, Client minor, Booking newBooking) {
+    
+    String insertSQL = """
+            INSERT INTO AccompaniedMinors (guardianId, minorId, bookingId)
+            VALUES (?, ?, ?)
+        """;
+
+    try {
+      executeUpdate(insertSQL, client.getUserId(), minor.getUserId(), newBooking.getBookingId());
+      System.out.println("AccompaniedBy relationship created successfully!");
+    } catch (SQLException e) {
+      System.err.println("Database error: " + e.getMessage());
+    }
+
+  }
 }

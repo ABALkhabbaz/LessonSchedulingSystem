@@ -25,7 +25,7 @@ public class Client extends User {
         System.out.println("Booking lesson: " + lesson.getDiscipline());
     }
 
-    public void enrollInLesson(DatabaseHandler dbHandler, Scanner scanner, boolean calledFromLegalGuardian) {
+    public Booking enrollInLesson(DatabaseHandler dbHandler, Scanner scanner, boolean calledFromLegalGuardian) {
 
         ArrayList<Lesson> lessons = null;
 
@@ -39,7 +39,7 @@ public class Client extends User {
 
         if (lessons == null || lessons.isEmpty()) {
             System.out.println("No lessons available to book.");
-            return;
+            return null;
         }
 
         System.out.println("Select an offering:");
@@ -52,20 +52,22 @@ public class Client extends User {
 
         if (!calledFromLegalGuardian && getAge() < 18) {
             System.out.println("You are under 18 years old. A legal guardian must book for you.");
+            System.out.println("Please sign into the legal guardian account to book a lesson for a minor.");
 
-            return;
+            return null;
         }
 
         // Ensures that there is no overlap for booking lessons
         if(dbHandler.hasBookingOverlap(this, lesson)) {
             System.out.println("You have already booked a lesson at this time.");
-            return;
+            return null;
         }
 
         Booking booking = dbHandler.insertNewBooking(lesson, this);
 
         System.out.println("Booking successful. Booking ID: " + booking.getBookingId());
 
+        return booking;
     }
 
     public void unenrollFromLesson(DatabaseHandler dbHandler, Scanner scanner) {
@@ -119,7 +121,9 @@ public class Client extends User {
 
             Client minor = (Client) userMinor;
 
-            minor.enrollInLesson(dbHandler, scanner, true);
+            Booking newBooking = minor.enrollInLesson(dbHandler, scanner, true);
+
+            dbHandler.insertAccompaniedBy(this, minor, newBooking);
     }
 
 }
