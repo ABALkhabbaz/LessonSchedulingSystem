@@ -634,6 +634,11 @@ public class DatabaseHandler {
       try (ResultSet rs = executeQuery(getBookingSQL, lesson.getLessonId(), user.getUserId())) {
         if (rs.next()) {
           long bookingId = rs.getLong("bookingId");
+          
+          if(lesson.isPrivate()) {
+            updateLessonAvailability(lesson, false);
+            lesson.setAvailable(false);
+          }
           return new Booking(bookingId, lesson, (Client) user);
         }
       }
