@@ -56,6 +56,12 @@ public class Client extends User {
             return;
         }
 
+        // Ensures that there is no overlap for booking lessons
+        if(dbHandler.hasBookingOverlap(this, lesson)) {
+            System.out.println("You have already booked a lesson at this time.");
+            return;
+        }
+
         Booking booking = dbHandler.insertNewBooking(lesson, this);
 
         System.out.println("Booking successful. Booking ID: " + booking.getBookingId());

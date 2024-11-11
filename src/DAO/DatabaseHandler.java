@@ -811,4 +811,46 @@ public class DatabaseHandler {
     System.out.println("Booking deleted successfully!");
   }
 
+
+  public boolean hasBookingOverlap(User client, Lesson lesson) {
+
+    String overlapCheckSQL = """
+            SELECT COUNT(*) AS overlapCount
+            FROM Bookings b
+            JOIN Lessons l ON b.lessonId = l.lessonId
+            WHERE b.clientId = ?
+              AND l.day = ?
+              AND l.locationName = ?
+              AND l.locationCity = ?
+              AND l.locationProvince = ?
+              AND l.locationAddress = ?
+              AND ((l.startTime < ? AND l.endTime > ?) OR (l.startTime < ? AND l.endTime > ?))
+              AND ((l.startDate <= ? AND l.endDate >= ?) OR (l.startDate >= ? AND l.endDate <= ?))
+        """;
+
+    try (ResultSet resultSet = executeQuery(overlapCheckSQL,
+        client.getUserId(),
+        lesson.getSchedule().getDay(),
+        lesson.getLocation().getName(),
+        lesson.getLocation().getCity(),
+        lesson.getLocation().getProvince(),
+        lesson.getLocation().getAddress(),
+        lesson.getSchedule().getEndTime(),
+        lesson.getSchedule().getStartTime(),
+        lesson.getSchedule().getStartTime(),
+        lesson.getSchedule().getEndTime(),
+        lesson.getSchedule().getEndDate(),
+        lesson.getSchedule().getStartDate(),
+        lesson.getSchedule().getStartDate(),
+        lesson.getSchedule().getEndDate())) {
+
+      if (resultSet.next() && resultSet.getInt("overlapCount") > 0) {
+        return true;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+    return false;
+  }
 }
