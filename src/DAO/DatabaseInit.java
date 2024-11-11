@@ -33,6 +33,7 @@ public class DatabaseInit {
     createAvailableCitiesTable(dbHandler);
     createLessonsTable(dbHandler);
     createBookingsTable(dbHandler);
+    createAccompaniedMinorTable(dbHandler);
   }
 
   private static void createUsersTable(DatabaseHandler dbHandler) throws SQLException {
@@ -185,5 +186,18 @@ public class DatabaseInit {
     }
 }
 
+  private static void createAccompaniedMinorTable(DatabaseHandler dbHandler) throws SQLException {
+    String createAccompaniedMinorTableSQL = """
+            CREATE TABLE IF NOT EXISTS AccompaniedMinors (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                minorId BIGINT NOT NULL,
+                guardianId BIGINT NOT NULL,
+                FOREIGN KEY (minorId) REFERENCES Users(userId) ON DELETE CASCADE,
+                FOREIGN KEY (guardianId) REFERENCES Users(userId) ON DELETE CASCADE
+            );
+        """;
 
+    dbHandler.executeUpdate(createAccompaniedMinorTableSQL);
+    System.out.println("Table 'AccompaniedMinors' has been created or already exists.");
+  }
 }
