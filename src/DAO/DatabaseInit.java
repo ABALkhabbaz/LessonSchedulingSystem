@@ -192,8 +192,10 @@ public class DatabaseInit {
                 id BIGINT AUTO_INCREMENT PRIMARY KEY,
                 minorId BIGINT NOT NULL,
                 guardianId BIGINT NOT NULL,
+                bookingId BIGINT NOT NULL,
                 FOREIGN KEY (minorId) REFERENCES Users(userId) ON DELETE CASCADE,
-                FOREIGN KEY (guardianId) REFERENCES Users(userId) ON DELETE CASCADE
+                FOREIGN KEY (guardianId) REFERENCES Users(userId) ON DELETE CASCADE,
+                FOREIGN KEY (bookingId) REFERENCES Bookings(bookingId) ON DELETE CASCADE
             );
         """;
 
