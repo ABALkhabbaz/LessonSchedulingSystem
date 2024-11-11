@@ -25,10 +25,10 @@ public class Person {
             System.out.println("No offerings available at the moment.");
         } else {
             System.out.println("Available Offerings:");
+            int i = 1;
             for (Lesson lesson : lessons) {
                 if(lesson.getInstructor() == null) continue; // Only display lessons with assigned instructors to public 
-                System.out.println("- " + lesson.getDiscipline() + " by "
-                        + lesson.getInstructor().getName());
+                System.out.println(i++ + ". " + lesson.getDiscipline() + " by " + lesson.getInstructor().getName());
             }
         }
     }
