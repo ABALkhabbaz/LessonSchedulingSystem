@@ -26,3 +26,23 @@ The **LessonSchedulingSystem** is a project for **SOEN 342 - Section II** that m
 - Updated diagrams (domain model, package, sequence, interaction, and class) to reflect refined system requirements and functionality.
 - Modified Java classes to align with the updated class structure, ensuring consistency across the system.
 
+## Sprint 4 Goals
+- **Database Integration**:
+  - Designed and implemented a relational database model consistent with the class diagrams.
+  - Developed a fully functional **DAO (Data Access Object)** package, including `DatabaseHandler` and `DatabaseInit` classes for database connection, table creation, and data handling.
+  - Created methods for CRUD operations (insert, update, delete) and querying the database for users, lessons, bookings, and instructor availability.
+
+- **System Enhancements**:
+  - Enhanced the booking and scheduling process with validations for underaged clients, lesson conflicts, and instructor availability.
+  - Implemented OCL constraints to enforce business rules like unique offerings, no overlapping bookings, and role-specific operations.
+  - Ensured lessons adhere to valid durations and booking capacities.
+
+- **Refinements**:
+  - Updated all UML diagrams (class, domain, package, sequence, interaction) to reflect the finalized system structure and logic.
+  - Refined operation contracts and system operations for clarity and consistency with the implementation.
+  - Improved the Java implementation to align with the refined class diagrams, ensuring seamless interaction between the application and the database.
+
+- **Additional Deliverables**:
+  - Defined precise **OCL** expressions to ensure consistency.
+  - Developed a complete and consistent **relational data model** based on the finalized class diagrams and system requirements.
+
