@@ -46,3 +46,7 @@ The **LessonSchedulingSystem** is a project for **SOEN 342 - Section II** that m
   - Defined precise **OCL** expressions to ensure consistency.
   - Developed a complete and consistent **relational data model** based on the finalized class diagrams and system requirements.
 
+- **Final Demonstration**:
+  - Delivered a 5-minute video showcasing the entire system functionality, including database integration and system workflows.
+  - **[Watch the Video Here](https://www.youtube.com/watch?v=3X3uxteTc4Y&ab_channel=GabrielDerhy)**
+
