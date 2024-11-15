@@ -446,7 +446,7 @@ public class DatabaseHandler {
     System.out.println("Lesson updated successfully!");
   }
 
-  public ArrayList<Lesson> getAvailableLessonsForInstructor() throws SQLException {
+  public ArrayList<Lesson> getAvailableLessonsForInstructor(Instructor i) throws SQLException {
     ArrayList<Lesson> lessons = new ArrayList<Lesson>();
     String getLessonsSQL = """
             SELECT *
@@ -457,7 +457,7 @@ public class DatabaseHandler {
     try (ResultSet rs = executeQuery(getLessonsSQL)) {
       while (rs.next()) {
         long instructorId = rs.getLong("instructorId");
-        Instructor instructor = null;
+        Instructor instructor = i;
 
         // Use getInstructor method if instructorId is not null
         if (instructorId != 0) {
@@ -489,7 +489,9 @@ public class DatabaseHandler {
             rs.getBoolean("isPrivate"),
             rs.getBoolean("isAvailable"));
 
-        if(instructor.getAvailableCities().contains(location.getCity())) lessons.add(lesson); // Return only lessons in available cities
+        if (instructor.getAvailableCities().contains(location.getCity())) {
+          lessons.add(lesson); // Return only lessons in available cities
+        }
       }
     }
 
@@ -634,12 +636,12 @@ public class DatabaseHandler {
       try (ResultSet rs = executeQuery(getBookingSQL, lesson.getLessonId(), user.getUserId())) {
         if (rs.next()) {
           long bookingId = rs.getLong("bookingId");
-          
-          if(lesson.isPrivate()) {
+
+          if (lesson.isPrivate()) {
             updateLessonAvailability(lesson, false);
             lesson.setAvailable(false);
           }
-          
+
           return new Booking(bookingId, lesson, (Client) user);
         }
       }
@@ -811,7 +813,6 @@ public class DatabaseHandler {
     System.out.println("Booking deleted successfully!");
   }
 
-
   public boolean hasBookingOverlap(User client, Lesson lesson) {
 
     String overlapCheckSQL = """
@@ -888,7 +889,7 @@ public class DatabaseHandler {
   }
 
   public void deleteUser(User user) {
-    
+
     String deleteSQL = """
             DELETE FROM Users
             WHERE userId = ?
@@ -904,7 +905,7 @@ public class DatabaseHandler {
   }
 
   public void insertAccompaniedBy(Client client, Client minor, Booking newBooking) {
-    
+
     String insertSQL = """
             INSERT INTO AccompaniedMinors (guardianId, minorId, bookingId)
             VALUES (?, ?, ?)

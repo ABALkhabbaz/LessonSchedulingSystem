@@ -26,7 +26,7 @@ public class Instructor extends User {
         ArrayList<Lesson> lessons = null;
         Lesson lesson = null;
         try {
-            lessons = dbHandler.getAvailableLessonsForInstructor();
+            lessons = dbHandler.getAvailableLessonsForInstructor(this);
         } catch (SQLException e) {
             e.printStackTrace();
         }
